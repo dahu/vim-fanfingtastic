@@ -1,4 +1,6 @@
 Fanf,ingTastic;
 ---------------
 
+image:blob/master/fanfingtastic.png[]
+
 __Find a char across lines__
