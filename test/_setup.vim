@@ -3,10 +3,10 @@ let &rtp = expand('<sfile>:p:h:h') . ',' . &rtp . ',' . expand('<sfile>:p:h:h') 
 function! LineColPos(line, col)
   let l = line('.')
   let c = col('.')
-  call vimtap#Ok(l == a:line, 'LineColPos Line ' . a:line . ' expected, got ' . l)
-  call vimtap#Ok(c == a:col, 'LineColPos Column ' . a:col . ' expected, got ' . c)
+  call vimtap#Is(l, a:line, 'LineColPos Line.')
+  call vimtap#Is(c, a:col, 'LineColPos Column.')
 endfunction
 
 function! VisualMatch(expected)
-  call vimtap#Ok(@" == a:expected, 'VisualMatch ' . a:expected . ' expected, got ' . @")
+  call vimtap#Is(@", a:expected, 'VisualMatch.')
 endfunction
