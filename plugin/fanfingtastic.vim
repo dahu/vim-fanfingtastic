@@ -1,42 +1,31 @@
 let b:fchar = ''
 
+" TODO tx does not move beyond the x with succesive tx.
+function! s:search(fwd, f, ...)
+  " Define what will be searched.
+  let pat = a:f ? b:fchar : (a:fwd ? '\_.\ze'.b:fchar : b:fchar.'\zs\_.')
+  let b_flag = a:fwd ? '' : 'b'
+  " This is for the tx todo.
+  let c_flag = !a:0 ? '' : (a:1 && !a:f ? 'c' : '')
+  return searchpos('\C\m'.pat, 'W'.b_flag.c_flag)
+endfunction
+
 function! s:next_char_pos(occurrence)
-  let orig_pos = getpos('.')
+  let orig_pos = getpos('.')[1:2]
   let prev_pos = orig_pos
   let occ = a:occurrence
   let cnt = 0
   while cnt < occ
-    exe "normal! f" . b:fchar
-    let new_pos = getpos('.')
-    if new_pos[2] != prev_pos[2]
+    let new_pos = s:search(1, 1)
+    if new_pos != prev_pos
       " found one
       let prev_pos = new_pos
       let cnt += 1
       "break
     else
-      let prev_pos = new_pos
-      normal! j0
-      if getline('.')[0] == b:fchar
-        " found one at the start of a line
-        let prev_pos = new_pos
-        let new_pos = getpos('.')
-        let cnt += 1
-        "break
-      else
-        let new_pos = getpos('.')
-        if new_pos[1] == prev_pos[1]
-          " last line in the buffer
-          " abort and return to original position
-          call setpos('.', orig_pos)
-          let new_pos = orig_pos
-          break
-        else
-          let prev_pos = new_pos
-        endif
-      endif
+      break
     endif
   endwhile
-  call setpos('.', orig_pos)
   return new_pos
 endfunction
 
