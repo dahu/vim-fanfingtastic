@@ -84,10 +84,3 @@ vnoremap ; <esc>:call VisualFindNextChar(b:fchar)<cr>
 
 onoremap f <esc>:call OperatorFindNextChar()<cr>
 onoremap ; <esc>:call OperatorFindNextChar(b:fchar)<cr>
-
-finish
-
-this dam this test is here
-and another test here
-this this test is here
-and another test here
