@@ -1,6 +1,3 @@
-Fanf,ingTastic;
----------------
-
-image:blob/master/fanfingtastic.png[]
+image:https://raw.github.com/dahu/vim-fanfingtastic/master/fanfingtastic.png[]
 
 __Find a char across lines__
