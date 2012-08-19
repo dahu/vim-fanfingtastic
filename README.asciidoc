@@ -1,4 +1,4 @@
-Fanf,ingTastic
---------------
+Fanf,ingTastic;
+---------------
 
 __Find a char across lines__
