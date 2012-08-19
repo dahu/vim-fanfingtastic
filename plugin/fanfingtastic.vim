@@ -11,20 +11,17 @@ function! s:search(fwd, f, ...)
 endfunction
 
 function! s:next_char_pos(occurrence)
-  let orig_pos = getpos('.')[1:2]
-  let prev_pos = orig_pos
-  let occ = a:occurrence
+  let prev_pos = getpos('.')[1:2]
   let cnt = 0
-  while cnt < occ
+  while cnt < a:occurrence
     let new_pos = s:search(1, 1)
-    if new_pos != prev_pos
-      " found one
-      let prev_pos = new_pos
-      let cnt += 1
-      "break
-    else
+    if new_pos[0] == 0
       break
     endif
+    " found one
+    let prev_pos = new_pos
+    let cnt += 1
+    "break
   endwhile
   return new_pos
 endfunction
@@ -41,21 +38,17 @@ function! FindNextChar(args)
   echo a:args
   call s:set_find_char(a:args)
   "call call('s:set_find_char', a:000)
-  let cur_pos = getpos('.')
-  let new_pos = s:next_char_pos(a:args[0])
-  if cur_pos != new_pos
-    call setpos('.', new_pos)
-  endif
+  return s:next_char_pos(a:args[0])
 endfunction
 
 function! VisualFindNextChar(args)
   echo a:args
   call s:set_find_char(a:args)
-  let cur_pos = getpos('.')
   let new_pos = s:next_char_pos(a:args[0])
-  if cur_pos != new_pos
+  echo new_pos
+  if new_pos[0] > 0
     normal! gv
-    call setpos("'`", new_pos)
+    call setpos("'`", [0]+new_pos+[0])
     normal! ``
   endif
 endfunction
