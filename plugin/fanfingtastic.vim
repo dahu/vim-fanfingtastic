@@ -47,8 +47,8 @@ function! VisualFindNextChar(args)
   let new_pos = s:next_char_pos(a:args[0])
   echo new_pos
   if new_pos[0] > 0
+    call setpos("'`", getpos('.'))
     normal! gv
-    call setpos("'`", [0]+new_pos+[0])
     normal! ``
   endif
 endfunction
