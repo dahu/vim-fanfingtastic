@@ -1,5 +1,5 @@
 call vimtest#StartTap()
-call vimtap#Plan(18) " <== XXX  Keep plan number updated.  XXX
+call vimtap#Plan(30) " <== XXX  Keep plan number updated.  XXX
 "call vimtap#Diag('Test')
 
 " run these tests twice; the first time without f,ing loaded
@@ -10,17 +10,17 @@ abcd abcd abcd abcd abcd
 abcde
 .
 
-  normal 1G0yfc
-  call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
-  call VisualMatch('abc')
-
   normal 1G0cfcxyz
-  call LineColPos(1, 3)
+  call LineColPos(1, 3)  " <== XXX Account for 2 tests each call XXX
   call LineMatch(1, 'xyz abc abc abc abc abc')
 
   normal 1G0dfc
   call LineColPos(1, 1)
   call LineMatch(1, ' abc abc abc abc')  "xyz abc abc...
+
+  normal 1G0yfc
+  call LineColPos(1, 1)
+  call VisualMatch(' abc')
 
   normal 1G0g~fc
   call LineColPos(1, 1)
