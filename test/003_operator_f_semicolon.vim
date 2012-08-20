@@ -28,7 +28,7 @@ abcde
 
   normal 1G0g~2fc
   call LineColPos(1, 1)
-  call LineMatch(1, ' abc ABC abc abc')  "xyz abc abc...
+  call LineMatch(1, ' abc ABC ABC abc')  "xyz abc abc...
 
   %d
   runtime plugin/fanfingtastic.vim
