@@ -10,3 +10,7 @@ endfunction
 function! VisualMatch(expected)
   call vimtap#Is(@", a:expected, 'VisualMatch.')
 endfunction
+
+function! LineMatch(line, expected)
+  call vimtap#Is(getline(a:line), a:expected, 'LineMatch.')
+endfunction

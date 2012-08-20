@@ -47,7 +47,7 @@ function! VisualFindNextChar(args)
   " this may not work for tT,
   normal! `>
   let new_pos = s:next_char_pos(a:args[0])
-  echom 'new_pos = ' . string(new_pos)
+  echom 'VFNC new_pos = ' . string(new_pos)
   if new_pos[0] > 0
     call setpos("'`", getpos('.'))
     normal! gv
@@ -56,18 +56,12 @@ function! VisualFindNextChar(args)
 endfunction
 
 function! OperatorFindNextChar(args)
-  echo a:args
+  echom string(a:args)
   call s:set_find_char(a:args)
-  let cur_pos = getpos('.')
-  let new_pos = s:next_char_pos(a:args[0])
-  echom "operator=#" . v:operator . "#"
-  if cur_pos != new_pos
-    if v:operator == 'c'
-      exe "normal v" . a:args[0] . "f" . b:fchar . 'x'
-      startinsert
-    else
-      exe "normal v" . a:args[0] . "f" . b:fchar . v:operator
-    endif
+  if v:operator == 'c'
+    exe "normal v" . a:args[0] . "f" . b:fchar . 'x'
+  else
+    exe "normal v" . a:args[0] . "f" . b:fchar
   endif
 endfunction
 
