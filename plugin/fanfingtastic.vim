@@ -42,10 +42,12 @@ function! FindNextChar(args)
 endfunction
 
 function! VisualFindNextChar(args)
-  echo a:args
+  echom string(a:args)
   call s:set_find_char(a:args)
+  " this may not work for tT,
+  normal! `>
   let new_pos = s:next_char_pos(a:args[0])
-  echo new_pos
+  echom 'new_pos = ' . string(new_pos)
   if new_pos[0] > 0
     normal! gv
     call setpos("'`", [0]+new_pos+[0])
