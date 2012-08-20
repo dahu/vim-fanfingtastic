@@ -10,10 +10,23 @@ function! s:search(fwd, f, ...)
   return searchpos('\C\m'.pat, 'W'.b_flag.c_flag)
 endfunction
 
-function! s:next_char_pos(occurrence)
+function! s:next_char_pos2(count, f, fwd)
+  let cnt = 0
+  while cnt < a:count
+    let new_pos = s:search(a:fwd, a:f)
+    if new_pos[0] == 0
+      break
+    endif
+    " found one
+    let cnt += 1
+  endwhile
+  return new_pos
+endfunction
+
+function! s:next_char_pos(count)
   let prev_pos = getpos('.')[1:2]
   let cnt = 0
-  while cnt < a:occurrence
+  while cnt < a:count
     let new_pos = s:search(1, 1)
     if new_pos[0] == 0
       break
@@ -27,11 +40,21 @@ function! s:next_char_pos(occurrence)
 endfunction
 
 function! s:set_find_char(args)
-  if len(a:args) == 2
+  if type(a:args) == type('')
+    let b:fchar = empty(a:args) ? nr2char(getchar()) : a:args
+  elseif len(a:args) == 2
     let b:fchar = a:args[1]
   else
     let b:fchar = nr2char(getchar())
   endif
+endfunction
+
+function! NextChar(count, char, f, fwd)
+  let b:ffwd = a:fwd < 0 ? b:ffwd : a:fwd
+  let fwd = a:fwd >= 0 ? b:ffwd : (a:fwd == -1 ? b:ffwd : !b:ffwd)
+  let b:ff = a:f
+  call s:set_find_char(a:char)
+  return s:next_char_pos2(a:count, a:f, fwd)
 endfunction
 
 function! FindNextChar(args)
@@ -65,8 +88,10 @@ function! OperatorFindNextChar(args)
   endif
 endfunction
 
-nnoremap  f :<c-u>call FindNextChar([v:count1])<cr>
-nnoremap  ; :<c-u>call FindNextChar([v:count1, b:fchar])<cr>
+nnoremap  t :<c-u>call NextChar(v:count1, '', 0, 1)<cr>
+nnoremap  f :<c-u>call NextChar(v:count1, '', 1, 1)<cr>
+nnoremap  , :<c-u>call NextChar(v:count1, b:fchar, b:ff, -2)<cr>
+nnoremap  ; :<c-u>call NextChar(v:count1, b:fchar, b:ff, -1)<cr>
 
 vnoremap  f :<c-u>call VisualFindNextChar([v:count1])<cr>
 vnoremap  ; :<c-u>call VisualFindNextChar([v:count1, b:fchar])<cr>
