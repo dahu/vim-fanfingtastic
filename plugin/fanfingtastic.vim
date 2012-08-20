@@ -10,7 +10,7 @@ function! s:search(fwd, f, ...)
   return searchpos('\C\m'.pat, 'W'.b_flag.c_flag)
 endfunction
 
-function! s:next_char_pos2(count, f, fwd)
+function! s:next_char_pos(count, f, fwd)
   let cnt = 0
   while cnt < a:count
     let new_pos = s:search(a:fwd, a:f)
@@ -19,22 +19,6 @@ function! s:next_char_pos2(count, f, fwd)
     endif
     " found one
     let cnt += 1
-  endwhile
-  return new_pos
-endfunction
-
-function! s:next_char_pos(count)
-  let prev_pos = getpos('.')[1:2]
-  let cnt = 0
-  while cnt < a:count
-    let new_pos = s:search(1, 1)
-    if new_pos[0] == 0
-      break
-    endif
-    " found one
-    let prev_pos = new_pos
-    let cnt += 1
-    "break
   endwhile
   return new_pos
 endfunction
@@ -54,14 +38,7 @@ function! NextChar(count, char, f, fwd)
   let fwd = a:fwd >= 0 ? b:ffwd : (a:fwd == -1 ? b:ffwd : !b:ffwd)
   let b:ff = a:f
   call s:set_find_char(a:char)
-  return s:next_char_pos2(a:count, a:f, fwd)
-endfunction
-
-function! FindNextChar(args)
-  echo a:args
-  call s:set_find_char(a:args)
-  "call call('s:set_find_char', a:000)
-  return s:next_char_pos(a:args[0])
+  return s:next_char_pos(a:count, a:f, fwd)
 endfunction
 
 function! VisualFindNextChar(args)
@@ -69,7 +46,7 @@ function! VisualFindNextChar(args)
   call s:set_find_char(a:args)
   " this may not work for tT,
   normal! `>
-  let new_pos = s:next_char_pos(a:args[0])
+  let new_pos = s:next_char_pos(a:args[0], 1, 1)
   echom 'VFNC new_pos = ' . string(new_pos)
   if new_pos[0] > 0
     call setpos("'`", getpos('.'))
