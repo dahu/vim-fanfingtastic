@@ -89,7 +89,9 @@ function! OperatorFindNextChar(args)
 endfunction
 
 nnoremap  t :<c-u>call NextChar(v:count1, '', 0, 1)<cr>
+nnoremap  T :<c-u>call NextChar(v:count1, '', 0, 0)<cr>
 nnoremap  f :<c-u>call NextChar(v:count1, '', 1, 1)<cr>
+nnoremap  F :<c-u>call NextChar(v:count1, '', 1, 0)<cr>
 nnoremap  , :<c-u>call NextChar(v:count1, b:fchar, b:ff, -2)<cr>
 nnoremap  ; :<c-u>call NextChar(v:count1, b:fchar, b:ff, -1)<cr>
 
