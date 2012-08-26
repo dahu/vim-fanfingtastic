@@ -26,6 +26,7 @@ endfunction
 function! GetVisualPos()
   let pos1 = getpos("'<")
   let pos2 = getpos("'>")
+  let corner = 0
   exec "normal! \<Esc>gv"
   if pos1[1] > 1 && pos2[1] > 1
     let move = 'k'
@@ -35,21 +36,26 @@ function! GetVisualPos()
     let back = 'k'
   elseif pos1[2] > 1 && pos2[2] > 1
     let move = 'h'
-    let move = 'l'
+    let back = 'l'
   elseif pos1[2] < len(getline(pos1[1])) && pos2[2] < len(getline(pos2[1]))
     let move = 'l'
-    let move = 'h'
+    let back = 'h'
   else
+    let corner = 1
     " Corner case.
     " visual limits are in opposite extremes of the buffer.
+    let move = 'j'
+    let back = 'k'
   endif
   exec "normal! " . move . "\<Esc>"
   let pos4 = getpos("'>")
   let pos3 = getpos("'<")
-  "call setpos("'<", pos1)
-  "call setpos("'>", pos2)
+  let back = (corner && pos1 == pos3 && pos2 == pos4) ? '' : back
   exec "normal! gv" . back
-  return pos1 == pos3 ? pos2 : pos1
+  if !corner
+    return pos1 == pos3 ? pos2 : pos1
+  endif
+  return pos1[1] < pos3[1] ? pos1 : pos2
 endfunction
 
 function! s:next_char_pos_visual(occurrence)
