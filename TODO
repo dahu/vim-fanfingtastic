@@ -1,0 +1,6 @@
+* have a case insensitive match mode - fx == fX
+* arbitrary aliases - call fanfingtastic#assign_alias('x', 'xyz') to allow fx to match any of x, y or z.
+  with this you could, for example:
+    assign_alias('b', '()')
+    assign_alias('B', '{}')
+
