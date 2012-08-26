@@ -23,6 +23,35 @@ function! s:next_char_pos(count, f, fwd)
   return new_pos
 endfunction
 
+function! GetVisualPos()
+  let pos1 = getpos("'<")
+  let pos2 = getpos("'>")
+  exec "normal! \<Esc>gv"
+  if pos1[1] > 1 && pos2[1] > 1
+    let move = 'k'
+    let back = 'j'
+  elseif pos1[1] < line('$') && pos2[1] > line('$')
+    let move = 'j'
+    let back = 'k'
+  elseif pos1[2] > 1 && pos2[2] > 1
+    let move = 'h'
+    let move = 'l'
+  elseif pos1[2] < len(getline(pos1[1])) && pos2[2] < len(getline(pos2[1]))
+    let move = 'l'
+    let move = 'h'
+  else
+    " Corner case.
+    " visual limits are in opposite extremes of the buffer.
+  endif
+  exec "normal! " . move . "\<Esc>"
+  let pos4 = getpos("'>")
+  let pos3 = getpos("'<")
+  "call setpos("'<", pos1)
+  "call setpos("'>", pos2)
+  exec "normal! gv" . back
+  return pos1 == pos3 ? pos2 : pos1
+endfunction
+
 function! s:next_char_pos_visual(occurrence)
   let orig_pos = getpos('.')
   let prev_pos = orig_pos
