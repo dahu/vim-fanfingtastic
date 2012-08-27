@@ -27,7 +27,6 @@ function! GetVisualPos()
   let pos1 = getpos("'<")
   let pos2 = getpos("'>")
   let corner = 0
-  exec "normal! \<Esc>gv"
   if pos1[1] > 1 && pos2[1] > 1
     let move = 'k'
     let back = 'j'
@@ -47,7 +46,7 @@ function! GetVisualPos()
     let move = 'j'
     let back = 'k'
   endif
-  exec "normal! " . move . "\<Esc>"
+  exec "normal! \<Esc>gv" . move . "\<Esc>"
   let pos4 = getpos("'>")
   let pos3 = getpos("'<")
   let back = (corner && pos1 == pos3 && pos2 == pos4) ? '' : back
