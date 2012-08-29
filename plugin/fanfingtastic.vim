@@ -50,7 +50,7 @@ function! GetVisualPos()
   let pos4 = getpos("'>")
   let pos3 = getpos("'<")
   let back = (corner && pos1 == pos3 && pos2 == pos4) ? '' : back
-  exec "normal! gv" . back
+  exec "normal! gv" . back . "\<Esc>"
   if !corner
     return pos1 == pos3 ? pos2 : pos1
   endif
