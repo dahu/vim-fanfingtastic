@@ -108,11 +108,14 @@ function! s:set_find_char(args)
 endfunction
 
 function! NextChar(count, char, f, fwd)
+  " This replicates t/T + ; behaviour.
+  let ccount = (a:count > 1 && !a:f && a:fwd == -1) ? a:count - 1 : a:count
   let b:ffwd = a:fwd < 0 ? b:ffwd : a:fwd
   let fwd = a:fwd >= 0 ? b:ffwd : (a:fwd == -1 ? b:ffwd : !b:ffwd)
   let b:ff = a:f
   call s:set_find_char(a:char)
-  return s:next_char_pos(a:count, a:f, fwd)
+  return s:next_char_pos(ccount, a:f, fwd)
+endfunction
 endfunction
 
 function! VisualFindNextChar(args)
