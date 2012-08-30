@@ -141,14 +141,14 @@ function! VisualNextChar(count, char, f, fwd)
   normal! `[v`]
 endfunction
 
-function! OperatorFindNextChar(args)
-  echom string(a:args)
-  call s:set_find_char(a:args)
-  if v:operator == 'c'
-    exe "normal v" . a:args[0] . "f" . b:fchar . 'x'
-  else
-    exe "normal v" . a:args[0] . "f" . b:fchar
+function! OperatorNextChar(count, char, f, fwd)
+  call setpos("'[", getpos('.'))
+  let pos = [0] + NextChar(a:count, a:char, a:f, a:fwd) + [0]
+  if pos[1] == 0
+    return ''
   endif
+  call setpos("']", pos)
+  normal! `[v`]
 endfunction
 
 nnoremap  t :<c-u>call NextChar(v:count1, ''     , 0   ,  1)<cr>
@@ -165,5 +165,10 @@ vnoremap  F :<c-u>call VisualNextChar(v:count1, ''     , 1   ,  0)<cr>
 vnoremap  , :<c-u>call VisualNextChar(v:count1, b:fchar, b:ff, -2)<cr>
 vnoremap  ; :<c-u>call VisualNextChar(v:count1, b:fchar, b:ff, -1)<cr>
 
-onoremap  f :<c-u>call OperatorFindNextChar([v:count1])<cr>
-onoremap  ; :<c-u>call OperatorFindNextChar([v:count1, b:fchar])<cr>
+onoremap  t :<c-u>call OperatorNextChar(v:count1, ''     , 0   ,  1)<cr>
+onoremap  T :<c-u>call OperatorNextChar(v:count1, ''     , 0   ,  0)<cr>
+onoremap  f :<c-u>call OperatorNextChar(v:count1, ''     , 1   ,  1)<cr>
+onoremap  F :<c-u>call OperatorNextChar(v:count1, ''     , 1   ,  0)<cr>
+onoremap  , :<c-u>call OperatorNextChar(v:count1, b:fchar, b:ff, -2)<cr>
+onoremap  ; :<c-u>call OperatorNextChar(v:count1, b:fchar, b:ff, -1)<cr>
+
