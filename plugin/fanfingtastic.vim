@@ -27,19 +27,24 @@ function! GetVisualPos()
   let pos1 = getpos("'<")
   let pos2 = getpos("'>")
   let corner = 0
-  if pos1[1] > 1 && pos2[1] > 1
-    let move = 'k'
-    let back = 'j'
-  elseif pos1[1] < line('$') && pos2[1] > line('$')
-    let move = 'j'
-    let back = 'k'
-  elseif pos1[2] > 1 && pos2[2] > 1
+  if pos1[2] > 1 && pos2[2] > 1
+    " Case 3
     let move = 'h'
     let back = 'l'
   elseif pos1[2] < len(getline(pos1[1])) && pos2[2] < len(getline(pos2[1]))
+    " Case 4
     let move = 'l'
     let back = 'h'
+  elseif pos1[1] > 1 && pos2[1] > 1
+    " Case 1
+    let move = 'k'
+    let back = 'j'
+  elseif pos1[1] < line('$') && pos2[1] > line('$')
+    " Case 2
+    let move = 'j'
+    let back = 'k'
   else
+    " Case 5
     let corner = 1
     " Corner case.
     " visual limits are in opposite extremes of the buffer.
@@ -47,17 +52,20 @@ function! GetVisualPos()
     let back = 'k'
   endif
   exec "normal! \<Esc>gv" . move . "\<Esc>"
-  let pos4 = getpos("'>")
   let pos3 = getpos("'<")
+  let pos4 = getpos("'>")
   let back = (corner && pos1 == pos3 && pos2 == pos4) ? '' : back
   exec "normal! gv" . back . "\<Esc>"
   if !corner
+    "if pos1 != pos3 && pos2 != pos4
+      "return pos1 == pos4 ? pos2 : pos1
+    "endif
     return pos1 == pos3 ? pos2 : pos1
   endif
-  return pos1[1] < pos3[1] ? pos1 : pos2
+  return pos1 == pos3 ? pos2 : pos1
 endfunction
 
-function! s:next_char_pos_visual(occurrence)
+function! s:next_char_pos_visual(occurrence) "{{{
   let orig_pos = getpos('.')
   let prev_pos = orig_pos
   let occ = a:occurrence
@@ -95,9 +103,10 @@ function! s:next_char_pos_visual(occurrence)
   endwhile
   call setpos('.', orig_pos)
   return new_pos
-endfunction
+endfunction "}}}
 
 function! s:set_find_char(args)
+  "call inputsave()
   if type(a:args) == type('')
     let b:fchar = empty(a:args) ? nr2char(getchar()) : a:args
   elseif len(a:args) == 2
@@ -105,6 +114,7 @@ function! s:set_find_char(args)
   else
     let b:fchar = nr2char(getchar())
   endif
+  "call inputrestore()
 endfunction
 
 function! NextChar(count, char, f, fwd)
@@ -116,20 +126,19 @@ function! NextChar(count, char, f, fwd)
   call s:set_find_char(a:char)
   return s:next_char_pos(ccount, a:f, fwd)
 endfunction
-endfunction
 
-function! VisualFindNextChar(args)
-  echom string(a:args)
-  call s:set_find_char(a:args)
-  " this may not work for tT,
-  normal! `>
-  let new_pos = s:next_char_pos(a:args[0], 1, 1)
-  echom 'VFNC new_pos = ' . string(new_pos)
-  if new_pos[0] > 0
-    call setpos("'`", getpos('.'))
-    normal! gv
-    normal! ``
+function! VisualNextChar(count, char, f, fwd)
+  let pos1 = GetVisualPos()
+  let pos2 = getpos("'<") == pos1 ? getpos("'>") : getpos("'<")
+  call visualmode(1)
+  call setpos('.', pos1)
+  let pos3 = [0] + NextChar(a:count, a:char, a:f, a:fwd) + [0]
+  if pos3[1] == 0
+    return ''
   endif
+  call setpos("'[", pos2)
+  call setpos("']", pos3)
+  normal! `[v`]
 endfunction
 
 function! OperatorFindNextChar(args)
@@ -142,15 +151,19 @@ function! OperatorFindNextChar(args)
   endif
 endfunction
 
-nnoremap  t :<c-u>call NextChar(v:count1, '', 0, 1)<cr>
-nnoremap  T :<c-u>call NextChar(v:count1, '', 0, 0)<cr>
-nnoremap  f :<c-u>call NextChar(v:count1, '', 1, 1)<cr>
-nnoremap  F :<c-u>call NextChar(v:count1, '', 1, 0)<cr>
+nnoremap  t :<c-u>call NextChar(v:count1, ''     , 0   ,  1)<cr>
+nnoremap  T :<c-u>call NextChar(v:count1, ''     , 0   ,  0)<cr>
+nnoremap  f :<c-u>call NextChar(v:count1, ''     , 1   ,  1)<cr>
+nnoremap  F :<c-u>call NextChar(v:count1, ''     , 1   ,  0)<cr>
 nnoremap  , :<c-u>call NextChar(v:count1, b:fchar, b:ff, -2)<cr>
 nnoremap  ; :<c-u>call NextChar(v:count1, b:fchar, b:ff, -1)<cr>
 
-vnoremap  f :<c-u>call VisualFindNextChar([v:count1])<cr>
-vnoremap  ; :<c-u>call VisualFindNextChar([v:count1, b:fchar])<cr>
+vnoremap  t :<c-u>call VisualNextChar(v:count1, ''     , 0   ,  1)<cr>
+vnoremap  T :<c-u>call VisualNextChar(v:count1, ''     , 0   ,  0)<cr>
+vnoremap  f :<c-u>call VisualNextChar(v:count1, ''     , 1   ,  1)<cr>
+vnoremap  F :<c-u>call VisualNextChar(v:count1, ''     , 1   ,  0)<cr>
+vnoremap  , :<c-u>call VisualNextChar(v:count1, b:fchar, b:ff, -2)<cr>
+vnoremap  ; :<c-u>call VisualNextChar(v:count1, b:fchar, b:ff, -1)<cr>
 
 onoremap  f :<c-u>call OperatorFindNextChar([v:count1])<cr>
 onoremap  ; :<c-u>call OperatorFindNextChar([v:count1, b:fchar])<cr>
