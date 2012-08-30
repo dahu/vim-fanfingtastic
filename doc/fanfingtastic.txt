@@ -47,7 +47,7 @@ NOTE: Aliases are yet to be implemented.
 
 The following options alter the behaviour of Fanf,ingTastic;
 
-|'fanfingtastic-ignorecase'|		Provides case insensitive FfTt,; finding.
+|'fanfingtastic_ignorecase'|		Provides case insensitive FfTt,; finding.
 
 ------------------------------------------------------------------------------
                                                            *'fanfingtastic-ignorecase'*
@@ -59,7 +59,7 @@ insensitive matches of the specified character. For example, fx will find the
 next 'x' or 'X' character. To enable this, add the following line to your
 $MYVIMRC:
 >
-  let g:fanfingtastic-ignorecase = 1
+  let g:fanfingtastic_ignorecase = 1
 <
 
 ==============================================================================
