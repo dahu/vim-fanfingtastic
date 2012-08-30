@@ -1,0 +1,75 @@
+*fanfingtastic.txt*	For Vim version 7.3	Last change: 2012-08-31
+
+
+			VIM REFERENCE MANUAL	by Barry Arthur
+
+
+Help on using Fanf,ingTastic;                                           *fanfingtastic*
+
+1. Introduction				|fanfingtastic-intro|
+2. Configuration			|fanfingtastic-configuration|
+3. Authors				|fanfingtastic-authors|
+
+==============================================================================
+ 1. INTRODUCTION                                                  *fanfingtastic-intro*
+
+Fanf,ingTastic; is a Vim plugin that enhances the builtin |F| |f| |,| |T| |t|
+and |;| keys by allowing them to wrap over lines with the full gamut of
+normal, visual and operator pending mode supported. This is all the default
+configuration of Fanf,ingTastic; provides, however the following enhanced
+functionality can be enabled through configuration options:
+
+Ignore Case~
+
+Fanf,ingTastic; is case sensitive by default. The |fanfingtastic-ignorecase|
+option allows you to find both 'x' and 'X' with either fx or fX.
+
+Aliases~
+
+Fanf,ingTastic; allows you to create aliases which specify a set of characters
+that will be scanned for when FfTt;, is used on that alias. For example:
+>
+  :call fingfantastic#assign_alias('b', '()')
+  :call fingfantastic#assign_alias('B', '{}')
+<
+would allow fb to search forward to the next '(' or ')' character (spanning
+lines as necessary). Likewise, TB would scan backwards (spanning lines) to
+place the cursor just to the right hand side of the '{' or '}' character prior
+to the cursor's current position. Of course, with both of these aliases
+enabled, the user will not be able to find plain 'b' or 'B' characters with the
+fFtT;, commands. See |fanfingtastic-aliases| for more details.
+
+==============================================================================
+ 2. CONFIGURATION                                         *fanfingtastic-configuration*
+
+                                                                *fanfingtastic-aliases*
+NOTE: Aliases are yet to be implemented.
+
+The following options alter the behaviour of Fanf,ingTastic;
+
+|'fanfingtastic-ignorecase'|		Provides case insensitive FfTt,; finding.
+
+------------------------------------------------------------------------------
+                                                           *'fanfingtastic-ignorecase'*
+Values: boolean
+Default: 0                                                                   ~
+
+Enabling 'fanfingtastic-ignorecase' allows the FfTt,; commands to find case
+insensitive matches of the specified character. For example, fx will find the
+next 'x' or 'X' character. To enable this, add the following line to your
+$MYVIMRC:
+>
+  let g:fanfingtastic-ignorecase = 1
+<
+
+==============================================================================
+ 3. AUTHORS                                                    *fanfingtastic-authors*
+
+Fanf,ingTastic; is maintained by:
+
+Israel Chauca F. <israelchauca@gmail.com> , and
+Barry Arthur <barry.arthur@gmail.com>
+
+Feedback about enhancements or bugs welcome.
+
+ vim:tw=78:ts=8:ft=help:norl:
