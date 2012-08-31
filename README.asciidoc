@@ -1,3 +1,28 @@
 image:https://raw.github.com/dahu/vim-fanfingtastic/master/fanfingtastic.png[]
 
-__Find a char across lines__
+__Find a char, across lines__
+
+
+__Fanf,ingTastic;__ is a Vim plugin that enhances the builtin +F+ +f+ +,+ +T+ +t+
+and +;+ keys by allowing them to wrap over lines with the full gamut of
+normal, visual and operator pending mode supported. This is all the default
+configuration of __Fanf,ingTastic;__ provides, however the following enhanced
+functionality can be enabled through configuration options:
+
+* **Case insensitivity** [PENDING] __Fanf,ingTastic;__ is case
+  sensitive by default but can be set to ignore case so that +fx+ will
+  match either ``x'' or ``X''.
+
+* **Aliases** __Fanf,ingTastic;__ allows you to
+  create aliases which specify a set of characters that will be
+  scanned for when FfTt;, is used on that alias. For example:
++
+  :call fingfantastic#assign_alias('b', '()')
+  :call fingfantastic#assign_alias('B', '{}')
++
+would allow +fb+ to search forward to the next ``('' or ``)'' character (spanning
+lines as necessary). Likewise, +TB+ would scan backwards (spanning lines) to
+place the cursor just to the right hand side of the ``{'' or ``}'' character prior
+to the cursor's current position. Of course, with both of these aliases
+enabled, the user will not be able to find plain ``b'' or ``B'' characters with the
+fFtT;, commands.
