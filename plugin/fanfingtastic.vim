@@ -212,8 +212,7 @@ onoremap  <Plug>fanfingtastic_, :<C-U>call OperatorNextChar(v:count1, g:fchar, g
 for m in ['n', 'v', 'o']
   for c in ['f', 'F', 't', 'T', ';', ',']
     if !hasmapto('<Plug>fanfingtastic_' . c, m)
-      echom m . 'map <unique><silent> ' . c . ' <Plug>fanfingtastic_' . c
-      exec m . 'map <unique><silent> ' . c . ' <Plug>fanfingtastic_' . c
+      sil! exec m . 'map <unique><silent> ' . c . ' <Plug>fanfingtastic_' . c
     endif
   endfor
 endfor
