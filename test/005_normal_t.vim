@@ -1,10 +1,12 @@
 call vimtest#StartTap()
-call vimtap#Plan(102) " <== XXX  Keep plan number updated.  XXX
+call vimtap#Plan(126) " <== XXX  Keep plan number updated.  XXX
 "call vimtap#Diag('Test')
 append
 abc abc abc abc abc abc
 abcd abcd abcd abcd abcd
 abcde
+a line with ~ and * here
+another line with ~ and * here
 .
 
 " run these tests twice; the first time without f,ing loaded
@@ -77,6 +79,22 @@ call LineColPos(2, 8, 'normal 1G0td2;')
 call LineColPos(2, 18, 'normal 1G02td3;')
 
 call LineColPos(3, 4, 'normal 1G0te')
+
+call LineColPos(4, 18, 'normal 1G0t*')
+call LineColPos(5, 24, 'normal 1G0t*;')
+call LineColPos(5, 24, 'normal 1G02t*')
+
+call LineColPos(4, 12, 'normal 1G0t~')
+call LineColPos(5, 18, 'normal 1G0t~;')
+call LineColPos(5, 18, 'normal 1G02t~')
+
+call LineColPos(5, 26, 'normal 5G$T*')
+call LineColPos(5, 20, 'normal 5G$T*;')
+call LineColPos(5, 20, 'normal 5G$2T*')
+
+call LineColPos(5, 20, 'normal 5G$T~')
+call LineColPos(4, 14, 'normal 5G$T~;')
+call LineColPos(4, 14, 'normal 5G$2T~')
 
 call vimtest#Quit()
 
