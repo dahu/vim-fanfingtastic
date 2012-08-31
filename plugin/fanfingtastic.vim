@@ -40,6 +40,10 @@ if !exists('g:fanfingtastic_ignorecase')
   let g:fanfingtastic_ignorecase = 0
 endif
 
+if !exists('g:fanfingtastic_fix_t')
+  let g:fanfingtastic_fix_t = 0
+endif
+
 " Private Functions: {{{1
 function! s:search(fwd, f, ...) "{{{2
   " Define what will be searched.
@@ -126,7 +130,7 @@ function! s:next_char(count, char, f, fwd) "{{{2
   let fwd = a:fwd >= 0 ? g:ffwd : (a:fwd == -1 ? g:ffwd : !g:ffwd)
   let g:ff = a:f
   call s:set_find_char(a:char)
-  if a:f ==? 'f'
+  if a:f ==? 'f' || g:fanfingtastic_fix_t
     let ccount = a:count
   else
     " This replicates t/T/; + count behaviour.
