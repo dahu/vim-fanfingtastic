@@ -47,7 +47,8 @@ function! s:search(fwd, f, ...) "{{{2
   let b_flag = a:fwd ? '' : 'b'
   " This is for the tx todo.
   let c_flag = !a:0 ? '' : (a:1 && !a:f ? 'c' : '')
-  return searchpos('\C\m'.pat, 'W'.b_flag.c_flag)
+  let ic = g:fanfingtastic_ignorecase ? '\c' : '\C'
+  return searchpos(ic.'\m'.pat, 'W'.b_flag.c_flag)
 endfunction
 
 function! s:next_char_pos(count, f, fwd) "{{{2
