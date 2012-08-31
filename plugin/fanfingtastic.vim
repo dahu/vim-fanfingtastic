@@ -45,12 +45,18 @@ if !exists('g:fanfingtastic_fix_t')
 endif
 
 " Private Functions: {{{1
+function! s:str2coll(str)
+  let pat = escape(a:str, '\]^')
+  let pat = substitute(pat, '\m^\(.*\)-\(.*\)', '\1\2-', 'g')
+  let pat = '[' . pat . ']'
+  return pat
+endfunction
+
 function! s:search(fwd, f, ...) "{{{2
   " Define what will be searched.
-  let cpat = escape(g:fchar, '\]^')
-  let cpat = substitute(cpat, '\m^\(.*\)-\(.*\)', '\1\2-', 'g')
-  let cpat = '[' . cpat . ']'
+  let cpat = s:str2coll(g:fchar)
   let pat = a:f ? cpat : (a:fwd ? '\_.\ze' . cpat : cpat . '\zs\_.')
+  echom 'pat: ' . pat
   let b_flag = a:fwd ? '' : 'b'
   " This is for the tx todo.
   let c_flag = !a:0 ? '' : (a:1 && !a:f ? 'c' : '')
@@ -122,6 +128,7 @@ function! s:set_find_char(args) "{{{2
   else
     let g:fchar = nr2char(getchar())
   endif
+  echom 'g:fchar: ' . g:fchar
   "call inputrestore()
 endfunction
 
@@ -138,11 +145,11 @@ function! s:next_char(count, char, f, fwd) "{{{2
     if a:f ==# 't' && (a:fwd == 1 || a:fwd == -1)
           \ || a:f ==# 'T' && a:fwd == -2
       " Search forward.
-      let pat = '\_.\ze'.g:fchar
+      let pat = '\_.\ze'.s:str2coll(g:fchar)
       let flags = 'cWn'
     else
       " Or not.
-      let pat = g:fchar.'\zs\_.'
+      let pat = s:str2coll(g:fchar).'\zs\_.'
       let flags = 'cWnb'
     endif
 
