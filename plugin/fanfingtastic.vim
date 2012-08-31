@@ -118,13 +118,48 @@ function! s:set_find_char(args)
 endfunction
 
 function! NextChar(count, char, f, fwd)
-  " This replicates t/T + ; behaviour.
-  let ccount = (a:count > 1 && !a:f && a:fwd == -1) ? a:count - 1 : a:count
   let b:ffwd = a:fwd < 0 ? b:ffwd : a:fwd
   let fwd = a:fwd >= 0 ? b:ffwd : (a:fwd == -1 ? b:ffwd : !b:ffwd)
   let b:ff = a:f
   call s:set_find_char(a:char)
-  return s:next_char_pos(ccount, a:f, fwd)
+  if a:f ==? 'f'
+    let ccount = a:count
+  else
+    " This replicates t/T/; + count behaviour.
+    let is_t_repeat = a:fwd < 0
+    if a:f ==# 't' && (a:fwd == 1 || a:fwd == -1)
+          \ || a:f ==# 'T' && a:fwd == -2
+      " Search forward.
+      let pat = '\_.\ze'.b:fchar
+      let flags = 'cWn'
+    else
+      " Or not.
+      let pat = b:fchar.'\zs\_.'
+      let flags = 'cWnb'
+    endif
+
+    let is_on_one = getpos('.')[1:2] == searchpos(pat, flags, line('.'))
+    if a:count == 1 && !is_t_repeat && is_on_one
+      return [0,0]
+    endif
+    if a:count > 1 && a:fwd == -1
+      " Case 1 ';'
+      let ccount = is_on_one ? a:count - 1 : a:count
+    elseif a:count > 1 && a:fwd == -2
+      " Case 2 ','
+      let ccount = a:count
+    elseif a:count > 1 && a:fwd
+      " Case 3 't'
+      let ccount = is_on_one ? a:count - 1 : a:count
+    elseif a:count > 1 && !a:fwd
+      " Case 4 'T'
+      let ccount = is_on_one ? a:count - 1 : a:count
+    else
+      let ccount = a:count
+    endif
+  endif
+
+  return s:next_char_pos(ccount, a:f =~? 'f', fwd)
 endfunction
 
 function! VisualNextChar(count, char, f, fwd)
@@ -151,24 +186,23 @@ function! OperatorNextChar(count, char, f, fwd)
   normal! `[v`]
 endfunction
 
-nnoremap  t :<c-u>call NextChar(v:count1, ''     , 0   ,  1)<cr>
-nnoremap  T :<c-u>call NextChar(v:count1, ''     , 0   ,  0)<cr>
-nnoremap  f :<c-u>call NextChar(v:count1, ''     , 1   ,  1)<cr>
-nnoremap  F :<c-u>call NextChar(v:count1, ''     , 1   ,  0)<cr>
-nnoremap  , :<c-u>call NextChar(v:count1, b:fchar, b:ff, -2)<cr>
-nnoremap  ; :<c-u>call NextChar(v:count1, b:fchar, b:ff, -1)<cr>
+nnoremap  <silent> f :<C-U>call NextChar(v:count1, ''     , 'f'   ,  1)<CR>
+nnoremap  <silent> F :<C-U>call NextChar(v:count1, ''     , 'F'   ,  0)<CR>
+nnoremap  <silent> t :<C-U>call NextChar(v:count1, ''     , 't'   ,  1)<CR>
+nnoremap  <silent> T :<C-U>call NextChar(v:count1, ''     , 'T'   ,  0)<CR>
+nnoremap  <silent> ; :<C-U>call NextChar(v:count1, b:fchar, b:ff, -1)<CR>
+nnoremap  <silent> , :<C-U>call NextChar(v:count1, b:fchar, b:ff, -2)<CR>
 
-vnoremap  t :<c-u>call VisualNextChar(v:count1, ''     , 0   ,  1)<cr>
-vnoremap  T :<c-u>call VisualNextChar(v:count1, ''     , 0   ,  0)<cr>
-vnoremap  f :<c-u>call VisualNextChar(v:count1, ''     , 1   ,  1)<cr>
-vnoremap  F :<c-u>call VisualNextChar(v:count1, ''     , 1   ,  0)<cr>
-vnoremap  , :<c-u>call VisualNextChar(v:count1, b:fchar, b:ff, -2)<cr>
-vnoremap  ; :<c-u>call VisualNextChar(v:count1, b:fchar, b:ff, -1)<cr>
+vnoremap  <silent> f :<C-U>call VisualNextChar(v:count1, ''     , 'f'   ,  1)<CR>
+vnoremap  <silent> F :<C-U>call VisualNextChar(v:count1, ''     , 'F'   ,  0)<CR>
+vnoremap  <silent> t :<C-U>call VisualNextChar(v:count1, ''     , 't'   ,  1)<CR>
+vnoremap  <silent> T :<C-U>call VisualNextChar(v:count1, ''     , 'T'   ,  0)<CR>
+vnoremap  <silent> ; :<C-U>call VisualNextChar(v:count1, b:fchar, b:ff, -1)<CR>
+vnoremap  <silent> , :<C-U>call VisualNextChar(v:count1, b:fchar, b:ff, -2)<CR>
 
-onoremap  t :<c-u>call OperatorNextChar(v:count1, ''     , 0   ,  1)<cr>
-onoremap  T :<c-u>call OperatorNextChar(v:count1, ''     , 0   ,  0)<cr>
-onoremap  f :<c-u>call OperatorNextChar(v:count1, ''     , 1   ,  1)<cr>
-onoremap  F :<c-u>call OperatorNextChar(v:count1, ''     , 1   ,  0)<cr>
-onoremap  , :<c-u>call OperatorNextChar(v:count1, b:fchar, b:ff, -2)<cr>
-onoremap  ; :<c-u>call OperatorNextChar(v:count1, b:fchar, b:ff, -1)<cr>
-
+onoremap  <silent> f :<C-U>call OperatorNextChar(v:count1, ''     , 'f'   ,  1)<CR>
+onoremap  <silent> F :<C-U>call OperatorNextChar(v:count1, ''     , 'F'   ,  0)<CR>
+onoremap  <silent> t :<C-U>call OperatorNextChar(v:count1, ''     , 't'   ,  1)<CR>
+onoremap  <silent> T :<C-U>call OperatorNextChar(v:count1, ''     , 'T'   ,  0)<CR>
+onoremap  <silent> ; :<C-U>call OperatorNextChar(v:count1, b:fchar, b:ff, -1)<CR>
+onoremap  <silent> , :<C-U>call OperatorNextChar(v:count1, b:fchar, b:ff, -2)<CR>
