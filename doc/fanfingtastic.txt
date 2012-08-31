@@ -15,7 +15,7 @@ Help on using Fanf,ingTastic;                                           *fanfing
 
 Fanf,ingTastic; is a Vim plugin that enhances the builtin |F| |f| |,| |T| |t|
 and |;| keys by allowing them to wrap over lines with the full gamut of
-normal, visual and operator pending mode supported. This is all the default
+normal, visual and operator pending mode support. This is all the default
 configuration of Fanf,ingTastic; provides, however the following enhanced
 functionality can be enabled through configuration options:
 
@@ -43,8 +43,6 @@ fFtT;, commands. See |fanfingtastic-aliases| for more details.
  2. CONFIGURATION                                         *fanfingtastic-configuration*
 
                                                                 *fanfingtastic-aliases*
-NOTE: Aliases are yet to be implemented.
-
 The following options alter the behaviour of Fanf,ingTastic;
 
 |'fanfingtastic_ignorecase'|		Provides case insensitive FfTt,; finding.
