@@ -1,9 +1,9 @@
-let b:fchar = ''
+let g:fchar = ''
 
 " TODO tx does not move beyond the x with succesive tx.
 function! s:search(fwd, f, ...)
   " Define what will be searched.
-  let pat = a:f ? b:fchar : (a:fwd ? '\_.\ze'.b:fchar : b:fchar.'\zs\_.')
+  let pat = a:f ? g:fchar : (a:fwd ? '\_.\ze'.g:fchar : g:fchar.'\zs\_.')
   let b_flag = a:fwd ? '' : 'b'
   " This is for the tx todo.
   let c_flag = !a:0 ? '' : (a:1 && !a:f ? 'c' : '')
@@ -71,7 +71,7 @@ function! s:next_char_pos_visual(occurrence) "{{{
   let occ = a:occurrence
   let cnt = 0
   while cnt < occ
-    exe "normal! f" . b:fchar
+    exe "normal! f" . g:fchar
     let new_pos = getpos('.')
     if new_pos[2] != prev_pos[2]
       " found one
@@ -81,7 +81,7 @@ function! s:next_char_pos_visual(occurrence) "{{{
     else
       let prev_pos = new_pos
       normal! j0
-      if getline('.')[0] == b:fchar
+      if getline('.')[0] == g:fchar
         " found one at the start of a line
         let prev_pos = new_pos
         let new_pos = getpos('.')
@@ -108,19 +108,19 @@ endfunction "}}}
 function! s:set_find_char(args)
   "call inputsave()
   if type(a:args) == type('')
-    let b:fchar = empty(a:args) ? nr2char(getchar()) : a:args
+    let g:fchar = empty(a:args) ? nr2char(getchar()) : a:args
   elseif len(a:args) == 2
-    let b:fchar = a:args[1]
+    let g:fchar = a:args[1]
   else
-    let b:fchar = nr2char(getchar())
+    let g:fchar = nr2char(getchar())
   endif
   "call inputrestore()
 endfunction
 
 function! NextChar(count, char, f, fwd)
-  let b:ffwd = a:fwd < 0 ? b:ffwd : a:fwd
-  let fwd = a:fwd >= 0 ? b:ffwd : (a:fwd == -1 ? b:ffwd : !b:ffwd)
-  let b:ff = a:f
+  let g:ffwd = a:fwd < 0 ? g:ffwd : a:fwd
+  let fwd = a:fwd >= 0 ? g:ffwd : (a:fwd == -1 ? g:ffwd : !g:ffwd)
+  let g:ff = a:f
   call s:set_find_char(a:char)
   if a:f ==? 'f'
     let ccount = a:count
@@ -130,11 +130,11 @@ function! NextChar(count, char, f, fwd)
     if a:f ==# 't' && (a:fwd == 1 || a:fwd == -1)
           \ || a:f ==# 'T' && a:fwd == -2
       " Search forward.
-      let pat = '\_.\ze'.b:fchar
+      let pat = '\_.\ze'.g:fchar
       let flags = 'cWn'
     else
       " Or not.
-      let pat = b:fchar.'\zs\_.'
+      let pat = g:fchar.'\zs\_.'
       let flags = 'cWnb'
     endif
 
@@ -190,19 +190,19 @@ nnoremap  <silent> f :<C-U>call NextChar(v:count1, ''     , 'f'   ,  1)<CR>
 nnoremap  <silent> F :<C-U>call NextChar(v:count1, ''     , 'F'   ,  0)<CR>
 nnoremap  <silent> t :<C-U>call NextChar(v:count1, ''     , 't'   ,  1)<CR>
 nnoremap  <silent> T :<C-U>call NextChar(v:count1, ''     , 'T'   ,  0)<CR>
-nnoremap  <silent> ; :<C-U>call NextChar(v:count1, b:fchar, b:ff, -1)<CR>
-nnoremap  <silent> , :<C-U>call NextChar(v:count1, b:fchar, b:ff, -2)<CR>
+nnoremap  <silent> ; :<C-U>call NextChar(v:count1, g:fchar, g:ff, -1)<CR>
+nnoremap  <silent> , :<C-U>call NextChar(v:count1, g:fchar, g:ff, -2)<CR>
 
 vnoremap  <silent> f :<C-U>call VisualNextChar(v:count1, ''     , 'f'   ,  1)<CR>
 vnoremap  <silent> F :<C-U>call VisualNextChar(v:count1, ''     , 'F'   ,  0)<CR>
 vnoremap  <silent> t :<C-U>call VisualNextChar(v:count1, ''     , 't'   ,  1)<CR>
 vnoremap  <silent> T :<C-U>call VisualNextChar(v:count1, ''     , 'T'   ,  0)<CR>
-vnoremap  <silent> ; :<C-U>call VisualNextChar(v:count1, b:fchar, b:ff, -1)<CR>
-vnoremap  <silent> , :<C-U>call VisualNextChar(v:count1, b:fchar, b:ff, -2)<CR>
+vnoremap  <silent> ; :<C-U>call VisualNextChar(v:count1, g:fchar, g:ff, -1)<CR>
+vnoremap  <silent> , :<C-U>call VisualNextChar(v:count1, g:fchar, g:ff, -2)<CR>
 
 onoremap  <silent> f :<C-U>call OperatorNextChar(v:count1, ''     , 'f'   ,  1)<CR>
 onoremap  <silent> F :<C-U>call OperatorNextChar(v:count1, ''     , 'F'   ,  0)<CR>
 onoremap  <silent> t :<C-U>call OperatorNextChar(v:count1, ''     , 't'   ,  1)<CR>
 onoremap  <silent> T :<C-U>call OperatorNextChar(v:count1, ''     , 'T'   ,  0)<CR>
-onoremap  <silent> ; :<C-U>call OperatorNextChar(v:count1, b:fchar, b:ff, -1)<CR>
-onoremap  <silent> , :<C-U>call OperatorNextChar(v:count1, b:fchar, b:ff, -2)<CR>
+onoremap  <silent> ; :<C-U>call OperatorNextChar(v:count1, g:fchar, g:ff, -1)<CR>
+onoremap  <silent> , :<C-U>call OperatorNextChar(v:count1, g:fchar, g:ff, -2)<CR>
