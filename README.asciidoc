@@ -9,7 +9,7 @@ normal, visual and operator pending mode supported. This is all the default
 configuration of __Fanf,ingTastic;__ provides, however the following enhanced
 functionality can be enabled through configuration options:
 
-* **Case insensitivity** [PENDING] __Fanf,ingTastic;__ is case
+* **Case insensitivity** __Fanf,ingTastic;__ is case
   sensitive by default but can be set to ignore case so that +fx+ will
   match either ``x'' or ``X''.
 
