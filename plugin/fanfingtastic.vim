@@ -147,7 +147,7 @@ function! s:next_char(count, char, f, fwd) "{{{2
     endif
 
     let is_on_one = getpos('.')[1:2] == searchpos(pat, flags, line('.'))
-    if a:count == 1 && !is_t_repeat && is_on_one
+    if a:count == 1 && is_on_one && (!is_t_repeat || is_t_repeat && &cpo =~ ';')
       return [0,0]
     endif
     if a:count > 1 && a:fwd == -1
