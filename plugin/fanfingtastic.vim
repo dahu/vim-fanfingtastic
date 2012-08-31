@@ -63,7 +63,7 @@ function! s:next_char_pos(count, f, fwd)
   return new_pos
 endfunction
 
-function! GetVisualPos()
+function! s:get_visual_pos()
   let pos1 = getpos("'<")
   let pos2 = getpos("'>")
   let corner = 0
@@ -117,7 +117,7 @@ function! s:set_find_char(args)
   "call inputrestore()
 endfunction
 
-function! NextChar(count, char, f, fwd)
+function! s:next_char(count, char, f, fwd)
   let g:ffwd = a:fwd < 0 ? g:ffwd : a:fwd
   let fwd = a:fwd >= 0 ? g:ffwd : (a:fwd == -1 ? g:ffwd : !g:ffwd)
   let g:ff = a:f
@@ -162,12 +162,12 @@ function! NextChar(count, char, f, fwd)
   return s:next_char_pos(ccount, a:f =~? 'f', fwd)
 endfunction
 
-function! VisualNextChar(count, char, f, fwd)
-  let pos1 = GetVisualPos()
+function! s:visual_next_char(count, char, f, fwd)
+  let pos1 = s:get_visual_pos()
   let pos2 = getpos("'<") == pos1 ? getpos("'>") : getpos("'<")
   call visualmode(1)
   call setpos('.', pos1)
-  let pos3 = [0] + NextChar(a:count, a:char, a:f, a:fwd) + [0]
+  let pos3 = [0] + s:next_char(a:count, a:char, a:f, a:fwd) + [0]
   if pos3[1] == 0
     return ''
   endif
@@ -176,9 +176,9 @@ function! VisualNextChar(count, char, f, fwd)
   normal! `[v`]
 endfunction
 
-function! OperatorNextChar(count, char, f, fwd)
+function! s:operator_next_char(count, char, f, fwd)
   call setpos("'[", getpos('.'))
-  let pos = [0] + NextChar(a:count, a:char, a:f, a:fwd) + [0]
+  let pos = [0] + s:next_char(a:count, a:char, a:f, a:fwd) + [0]
   if pos[1] == 0
     return ''
   endif
@@ -186,28 +186,33 @@ function! OperatorNextChar(count, char, f, fwd)
   normal! `[v`]
 endfunction
 
+" Private Functions: {{{1
+function! FanfingtasticEval(expr)
+  return eval(a:expr)
+endfunction
+
 " Maps: {{{1
 
-nnoremap  <Plug>fanfingtastic_f :<C-U>call NextChar(v:count1, ''     , 'f'   ,  1)<CR>
-nnoremap  <Plug>fanfingtastic_F :<C-U>call NextChar(v:count1, ''     , 'F'   ,  0)<CR>
-nnoremap  <Plug>fanfingtastic_t :<C-U>call NextChar(v:count1, ''     , 't'   ,  1)<CR>
-nnoremap  <Plug>fanfingtastic_T :<C-U>call NextChar(v:count1, ''     , 'T'   ,  0)<CR>
-nnoremap  <Plug>fanfingtastic_; :<C-U>call NextChar(v:count1, g:fchar, g:ff, -1)<CR>
-nnoremap  <Plug>fanfingtastic_, :<C-U>call NextChar(v:count1, g:fchar, g:ff, -2)<CR>
+nnoremap  <Plug>fanfingtastic_f :<C-U>call <SID>next_char(v:count1, ''     , 'f'   ,  1)<CR>
+nnoremap  <Plug>fanfingtastic_F :<C-U>call <SID>next_char(v:count1, ''     , 'F'   ,  0)<CR>
+nnoremap  <Plug>fanfingtastic_t :<C-U>call <SID>next_char(v:count1, ''     , 't'   ,  1)<CR>
+nnoremap  <Plug>fanfingtastic_T :<C-U>call <SID>next_char(v:count1, ''     , 'T'   ,  0)<CR>
+nnoremap  <Plug>fanfingtastic_; :<C-U>call <SID>next_char(v:count1, g:fchar, g:ff, -1)<CR>
+nnoremap  <Plug>fanfingtastic_, :<C-U>call <SID>next_char(v:count1, g:fchar, g:ff, -2)<CR>
 
-vnoremap  <Plug>fanfingtastic_f :<C-U>call VisualNextChar(v:count1, ''     , 'f'   ,  1)<CR>
-vnoremap  <Plug>fanfingtastic_F :<C-U>call VisualNextChar(v:count1, ''     , 'F'   ,  0)<CR>
-vnoremap  <Plug>fanfingtastic_t :<C-U>call VisualNextChar(v:count1, ''     , 't'   ,  1)<CR>
-vnoremap  <Plug>fanfingtastic_T :<C-U>call VisualNextChar(v:count1, ''     , 'T'   ,  0)<CR>
-vnoremap  <Plug>fanfingtastic_; :<C-U>call VisualNextChar(v:count1, g:fchar, g:ff, -1)<CR>
-vnoremap  <Plug>fanfingtastic_, :<C-U>call VisualNextChar(v:count1, g:fchar, g:ff, -2)<CR>
+vnoremap  <Plug>fanfingtastic_f :<C-U>call <SID>visual_next_char(v:count1, ''     , 'f'   ,  1)<CR>
+vnoremap  <Plug>fanfingtastic_F :<C-U>call <SID>visual_next_char(v:count1, ''     , 'F'   ,  0)<CR>
+vnoremap  <Plug>fanfingtastic_t :<C-U>call <SID>visual_next_char(v:count1, ''     , 't'   ,  1)<CR>
+vnoremap  <Plug>fanfingtastic_T :<C-U>call <SID>visual_next_char(v:count1, ''     , 'T'   ,  0)<CR>
+vnoremap  <Plug>fanfingtastic_; :<C-U>call <SID>visual_next_char(v:count1, g:fchar, g:ff, -1)<CR>
+vnoremap  <Plug>fanfingtastic_, :<C-U>call <SID>visual_next_char(v:count1, g:fchar, g:ff, -2)<CR>
 
-onoremap  <Plug>fanfingtastic_f :<C-U>call OperatorNextChar(v:count1, ''     , 'f'   ,  1)<CR>
-onoremap  <Plug>fanfingtastic_F :<C-U>call OperatorNextChar(v:count1, ''     , 'F'   ,  0)<CR>
-onoremap  <Plug>fanfingtastic_t :<C-U>call OperatorNextChar(v:count1, ''     , 't'   ,  1)<CR>
-onoremap  <Plug>fanfingtastic_T :<C-U>call OperatorNextChar(v:count1, ''     , 'T'   ,  0)<CR>
-onoremap  <Plug>fanfingtastic_; :<C-U>call OperatorNextChar(v:count1, g:fchar, g:ff, -1)<CR>
-onoremap  <Plug>fanfingtastic_, :<C-U>call OperatorNextChar(v:count1, g:fchar, g:ff, -2)<CR>
+onoremap  <Plug>fanfingtastic_f :<C-U>call <SID>operator_next_char(v:count1, ''     , 'f'   ,  1)<CR>
+onoremap  <Plug>fanfingtastic_F :<C-U>call <SID>operator_next_char(v:count1, ''     , 'F'   ,  0)<CR>
+onoremap  <Plug>fanfingtastic_t :<C-U>call <SID>operator_next_char(v:count1, ''     , 't'   ,  1)<CR>
+onoremap  <Plug>fanfingtastic_T :<C-U>call <SID>operator_next_char(v:count1, ''     , 'T'   ,  0)<CR>
+onoremap  <Plug>fanfingtastic_; :<C-U>call <SID>operator_next_char(v:count1, g:fchar, g:ff, -1)<CR>
+onoremap  <Plug>fanfingtastic_, :<C-U>call <SID>operator_next_char(v:count1, g:fchar, g:ff, -2)<CR>
 
 for m in ['n', 'v', 'o']
   for c in ['f', 'F', 't', 'T', ';', ',']
