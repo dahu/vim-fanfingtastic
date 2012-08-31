@@ -16,7 +16,6 @@ for loop in range(2)
 
   call LineColPos(1, 10, 'normal 1G03tc')
 
-  call vimtap#Todo(2)
   call LineColPos(1, 2, 'normal 1G0tctc')
 
   call LineColPos(1, 6, 'normal 1G0tc;')
@@ -38,8 +37,7 @@ for loop in range(2)
 
   call LineColPos(1, 14, 'normal 1G$3Ta')
 
-  call vimtap#Todo(2)
-  call LineColPos(1, 14, 'normal 1G$TaTa')
+  call LineColPos(1, 22, 'normal 1G$TaTa')
 
   call LineColPos(1, 18, 'normal 1G$Ta;')
 

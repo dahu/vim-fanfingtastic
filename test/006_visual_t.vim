@@ -31,7 +31,7 @@ endfor
 
 normal 1G0v7tcy
 call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
-call VisualMatch("abc abc abc abc abc ab")
+call VisualMatch("abc abc abc abc abc abc\nab")
 
 normal 1G0vtdy
 call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
@@ -39,7 +39,7 @@ call VisualMatch("abc abc abc abc abc abc\nabc")
 
 normal 1G0v2tdy
 call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
-call VisualMatch("abc abc abc abc abc abc\nabc")
+call VisualMatch("abc abc abc abc abc abc\nabcd abc")
 
 normal 1G0vtd;y
 call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
@@ -47,7 +47,7 @@ call VisualMatch("abc abc abc abc abc abc\nabcd abc")
 
 normal 1G0v2td3;y
 call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
-call VisualMatch("abc abc abc abc abc abc\nabcd abcd abc")
+call VisualMatch("abc abc abc abc abc abc\nabcd abcd abcd abc")
 
 normal 1G0vtey
 call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
