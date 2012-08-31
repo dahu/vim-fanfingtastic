@@ -89,8 +89,8 @@ call LineColPos(5, 18, 'normal 1G0t~;')
 call LineColPos(5, 18, 'normal 1G02t~')
 
 call LineColPos(5, 26, 'normal 5G$T*')
-call LineColPos(5, 20, 'normal 5G$T*;')
-call LineColPos(5, 20, 'normal 5G$2T*')
+call LineColPos(4, 20, 'normal 5G$T*;')
+call LineColPos(4, 20, 'normal 5G$2T*')
 
 call LineColPos(5, 20, 'normal 5G$T~')
 call LineColPos(4, 14, 'normal 5G$T~;')
