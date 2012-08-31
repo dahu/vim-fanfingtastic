@@ -41,7 +41,7 @@ if !exists('g:fanfingtastic_ignorecase')
 endif
 
 " Private Functions: {{{1
-function! s:search(fwd, f, ...)
+function! s:search(fwd, f, ...) "{{{2
   " Define what will be searched.
   let pat = a:f ? g:fchar : (a:fwd ? '\_.\ze'.g:fchar : g:fchar.'\zs\_.')
   let b_flag = a:fwd ? '' : 'b'
@@ -50,7 +50,7 @@ function! s:search(fwd, f, ...)
   return searchpos('\C\m'.pat, 'W'.b_flag.c_flag)
 endfunction
 
-function! s:next_char_pos(count, f, fwd)
+function! s:next_char_pos(count, f, fwd) "{{{2
   let cnt = 0
   while cnt < a:count
     let new_pos = s:search(a:fwd, a:f)
@@ -63,7 +63,7 @@ function! s:next_char_pos(count, f, fwd)
   return new_pos
 endfunction
 
-function! s:get_visual_pos()
+function! s:get_visual_pos() "{{{2
   let pos1 = getpos("'<")
   let pos2 = getpos("'>")
   let corner = 0
@@ -105,7 +105,7 @@ function! s:get_visual_pos()
   return pos1 == pos3 ? pos2 : pos1
 endfunction
 
-function! s:set_find_char(args)
+function! s:set_find_char(args) "{{{2
   "call inputsave()
   if type(a:args) == type('')
     let g:fchar = empty(a:args) ? nr2char(getchar()) : a:args
@@ -117,7 +117,7 @@ function! s:set_find_char(args)
   "call inputrestore()
 endfunction
 
-function! s:next_char(count, char, f, fwd)
+function! s:next_char(count, char, f, fwd) "{{{2
   let g:ffwd = a:fwd < 0 ? g:ffwd : a:fwd
   let fwd = a:fwd >= 0 ? g:ffwd : (a:fwd == -1 ? g:ffwd : !g:ffwd)
   let g:ff = a:f
@@ -162,7 +162,7 @@ function! s:next_char(count, char, f, fwd)
   return s:next_char_pos(ccount, a:f =~? 'f', fwd)
 endfunction
 
-function! s:visual_next_char(count, char, f, fwd)
+function! s:visual_next_char(count, char, f, fwd) "{{{2
   let pos1 = s:get_visual_pos()
   let pos2 = getpos("'<") == pos1 ? getpos("'>") : getpos("'<")
   call visualmode(1)
@@ -176,7 +176,7 @@ function! s:visual_next_char(count, char, f, fwd)
   normal! `[v`]
 endfunction
 
-function! s:operator_next_char(count, char, f, fwd)
+function! s:operator_next_char(count, char, f, fwd) "{{{2
   call setpos("'[", getpos('.'))
   let pos = [0] + s:next_char(a:count, a:char, a:f, a:fwd) + [0]
   if pos[1] == 0
@@ -186,7 +186,7 @@ function! s:operator_next_char(count, char, f, fwd)
   normal! `[v`]
 endfunction
 
-" Private Functions: {{{1
+" Public Functions: {{{1
 function! FanfingtasticEval(expr)
   return eval(a:expr)
 endfunction
