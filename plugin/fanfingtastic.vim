@@ -43,7 +43,10 @@ endif
 " Private Functions: {{{1
 function! s:search(fwd, f, ...) "{{{2
   " Define what will be searched.
-  let pat = a:f ? g:fchar : (a:fwd ? '\_.\ze'.g:fchar : g:fchar.'\zs\_.')
+  let cpat = escape(g:fchar, '\]^')
+  let cpat = substitute(cpat, '\m^\(.*\)-\(.*\)', '\1\2-', 'g')
+  let cpat = '[' . cpat . ']'
+  let pat = a:f ? cpat : (a:fwd ? '\_.\ze' . cpat : cpat . '\zs\_.')
   let b_flag = a:fwd ? '' : 'b'
   " This is for the tx todo.
   let c_flag = !a:0 ? '' : (a:1 && !a:f ? 'c' : '')
