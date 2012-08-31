@@ -34,7 +34,7 @@ set cpo&vim
 "endif
 "let g:loaded_fanfingtastic = 1
 
-let g:fchar = ''
+let s:fchar = ''
 " Options: {{{1
 if !exists('g:fanfingtastic_ignorecase')
   let g:fanfingtastic_ignorecase = 0
@@ -45,7 +45,11 @@ if !exists('g:fanfingtastic_fix_t')
 endif
 
 " Private Functions: {{{1
-function! s:str2coll(str)
+function! s:get(var) "{{{2
+  return eval('s:'.a:var)
+endfunction
+
+function! s:str2coll(str) "{{{2
   let pat = escape(a:str, '\]^')
   let pat = substitute(pat, '\m^\(.*\)-\(.*\)', '\1\2-', 'g')
   let pat = '[' . pat . ']'
@@ -54,7 +58,7 @@ endfunction
 
 function! s:search(fwd, f, ...) "{{{2
   " Define what will be searched.
-  let cpat = s:str2coll(g:fchar)
+  let cpat = s:str2coll(s:fchar)
   let pat = a:f ? cpat : (a:fwd ? '\_.\ze' . cpat : cpat . '\zs\_.')
   let b_flag = a:fwd ? '' : 'b'
   " This is for the tx todo.
@@ -121,19 +125,19 @@ endfunction
 function! s:set_find_char(args) "{{{2
   "call inputsave()
   if type(a:args) == type('')
-    let g:fchar = empty(a:args) ? nr2char(getchar()) : a:args
+    let s:fchar = empty(a:args) ? nr2char(getchar()) : a:args
   elseif len(a:args) == 2
-    let g:fchar = a:args[1]
+    let s:fchar = a:args[1]
   else
-    let g:fchar = nr2char(getchar())
+    let s:fchar = nr2char(getchar())
   endif
   "call inputrestore()
 endfunction
 
 function! s:next_char(count, char, f, fwd) "{{{2
-  let g:ffwd = a:fwd < 0 ? g:ffwd : a:fwd
-  let fwd = a:fwd >= 0 ? g:ffwd : (a:fwd == -1 ? g:ffwd : !g:ffwd)
-  let g:ff = a:f
+  let s:ffwd = a:fwd < 0 ? s:ffwd : a:fwd
+  let fwd = a:fwd >= 0 ? s:ffwd : (a:fwd == -1 ? s:ffwd : !s:ffwd)
+  let s:ff = a:f
   call s:set_find_char(a:char)
   if a:f ==? 'f' || g:fanfingtastic_fix_t
     let ccount = a:count
@@ -143,11 +147,11 @@ function! s:next_char(count, char, f, fwd) "{{{2
     if a:f ==# 't' && (a:fwd == 1 || a:fwd == -1)
           \ || a:f ==# 'T' && a:fwd == -2
       " Search forward.
-      let pat = '\_.\ze'.s:str2coll(g:fchar)
+      let pat = '\_.\ze'.s:str2coll(s:fchar)
       let flags = 'cWn'
     else
       " Or not.
-      let pat = s:str2coll(g:fchar).'\zs\_.'
+      let pat = s:str2coll(s:fchar).'\zs\_.'
       let flags = 'cWnb'
     endif
 
@@ -236,22 +240,22 @@ nnoremap  <Plug>fanfingtastic_f :<C-U>call <SID>next_char(v:count1, ''     , 'f'
 nnoremap  <Plug>fanfingtastic_F :<C-U>call <SID>next_char(v:count1, ''     , 'F'   ,  0)<CR>
 nnoremap  <Plug>fanfingtastic_t :<C-U>call <SID>next_char(v:count1, ''     , 't'   ,  1)<CR>
 nnoremap  <Plug>fanfingtastic_T :<C-U>call <SID>next_char(v:count1, ''     , 'T'   ,  0)<CR>
-nnoremap  <Plug>fanfingtastic_; :<C-U>call <SID>next_char(v:count1, g:fchar, g:ff, -1)<CR>
-nnoremap  <Plug>fanfingtastic_, :<C-U>call <SID>next_char(v:count1, g:fchar, g:ff, -2)<CR>
+nnoremap  <Plug>fanfingtastic_; :<C-U>call <SID>next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -1)<CR>
+nnoremap  <Plug>fanfingtastic_, :<C-U>call <SID>next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -2)<CR>
 
 vnoremap  <Plug>fanfingtastic_f :<C-U>call <SID>visual_next_char(v:count1, ''     , 'f'   ,  1)<CR>
 vnoremap  <Plug>fanfingtastic_F :<C-U>call <SID>visual_next_char(v:count1, ''     , 'F'   ,  0)<CR>
 vnoremap  <Plug>fanfingtastic_t :<C-U>call <SID>visual_next_char(v:count1, ''     , 't'   ,  1)<CR>
 vnoremap  <Plug>fanfingtastic_T :<C-U>call <SID>visual_next_char(v:count1, ''     , 'T'   ,  0)<CR>
-vnoremap  <Plug>fanfingtastic_; :<C-U>call <SID>visual_next_char(v:count1, g:fchar, g:ff, -1)<CR>
-vnoremap  <Plug>fanfingtastic_, :<C-U>call <SID>visual_next_char(v:count1, g:fchar, g:ff, -2)<CR>
+vnoremap  <Plug>fanfingtastic_; :<C-U>call <SID>visual_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -1)<CR>
+vnoremap  <Plug>fanfingtastic_, :<C-U>call <SID>visual_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -2)<CR>
 
 onoremap  <Plug>fanfingtastic_f :<C-U>call <SID>operator_next_char(v:count1, ''     , 'f'   ,  1)<CR>
 onoremap  <Plug>fanfingtastic_F :<C-U>call <SID>operator_next_char(v:count1, ''     , 'F'   ,  0)<CR>
 onoremap  <Plug>fanfingtastic_t :<C-U>call <SID>operator_next_char(v:count1, ''     , 't'   ,  1)<CR>
 onoremap  <Plug>fanfingtastic_T :<C-U>call <SID>operator_next_char(v:count1, ''     , 'T'   ,  0)<CR>
-onoremap  <Plug>fanfingtastic_; :<C-U>call <SID>operator_next_char(v:count1, g:fchar, g:ff, -1)<CR>
-onoremap  <Plug>fanfingtastic_, :<C-U>call <SID>operator_next_char(v:count1, g:fchar, g:ff, -2)<CR>
+onoremap  <Plug>fanfingtastic_; :<C-U>call <SID>operator_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -1)<CR>
+onoremap  <Plug>fanfingtastic_, :<C-U>call <SID>operator_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -2)<CR>
 
 for m in ['n', 'v', 'o']
   for c in ['f', 'F', 't', 'T', ';', ',']
