@@ -190,6 +190,32 @@ function! s:operator_next_char(count, char, f, fwd) "{{{2
   normal! `[v`]
 endfunction
 
+function! s:define_alias(alias, chars, bang) "{{{2
+  let err = []
+  let chars = substitute(a:chars, "'", '&&', 'g')
+  let uniq = a:bang ? '' : '<unique>'
+  for cmd in ['f', 'F', 't', 'T']
+    let fwd = cmd =~# '[ft]'
+    for [m, fun] in [['n', ''], ['v', 'visual_'], ['o', 'operator_']]
+      try
+        exe m . "nore <silent>" . uniq . " " . cmd . a:alias
+              \ . " :<C-U>call <SID>" . fun . "next_char(v:count1, '"
+              \ . chars . "', '" . cmd . "', " . fwd . ")<CR>"
+      catch /^Vim\%((\a\+)\)\=:E227/
+        call add(err, matchstr(v:exception, '\S\+$'))
+      endtry
+    endfor
+  endfor
+  if !empty(err)
+    call filter(err, 'count(err, v:val) == 1')
+    let pl = len(err) == 1 ? '' : 's'
+    let tp = len(err) == 1 ? 's' : ''
+    echohl ErrorMsg
+    echom "FanfingTastic: Mapping" . pl . " already exist" . tp . " for " . join(err, ', ') . " (add ! to override)"
+    echohl None
+  endif
+endfunction
+
 " Public Functions: {{{1
 function! FanfingtasticEval(expr)
   return eval(a:expr)
@@ -226,8 +252,7 @@ for m in ['n', 'v', 'o']
   endfor
 endfor
 " Commands: {{{1
-command! -nargs=0 -bar MyCommand1 call <SID>MyScriptLocalFunction()
-command! -nargs=0 -bar MyCommand2 call MyPublicFunction()
+command! -nargs=+ -bar -bang FanfingTasticAlias call <SID>define_alias(<f-args>, <bang>0)
 
 " Teardown:{{{1
 "reset &cpo back to users setting
