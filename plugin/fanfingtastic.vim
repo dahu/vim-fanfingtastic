@@ -1,6 +1,46 @@
-let g:fchar = ''
+" Vim global plugin to enhace f/F/t/T/;/,
+" Maintainer:	Israel Chauca F. <israelchauca@gmail.com>
+"		Barry Arthur <barry.arthur@gmail.com>
+" Version:	0.1
+" Description:	Fanf,ingTastic; is a Vim plugin that enhances the builtin
+"		f/F/t/T/;/, keys.
+" Last Change:	2012-08-31
+" License:	Vim License (see :help license)
+" Location:	plugin/fanfingtastic.vim
+" Website:	https://github.com/dahu/fanfingtastic
+"
+" See fanfingtastic.txt for help.  This can be accessed by doing:
+"
+" :helptags ~/.vim/doc
+" :help fanfingtastic
 
-" TODO tx does not move beyond the x with succesive tx.
+let g:fanfingtastic_version = '0.1'
+
+" Vimscript Setup: {{{1
+" Allow use of line continuation.
+let s:save_cpo = &cpo
+set cpo&vim
+
+" load guard
+" uncomment after plugin development.
+" XXX The conditions are only as examples of how to use them. Change them as
+" needed. XXX
+"if exists("g:loaded_fanfingtastic")
+"      \ || v:version < 700
+"      \ || v:version == 703 && !has('patch338')
+"      \ || &compatible
+"  let &cpo = s:save_cpo
+"  finish
+"endif
+"let g:loaded_fanfingtastic = 1
+
+let g:fchar = ''
+" Options: {{{1
+if !exists('g:fanfingtastic_ignorecase')
+  let g:fanfingtastic_ignorecase = 0
+endif
+
+" Private Functions: {{{1
 function! s:search(fwd, f, ...)
   " Define what will be searched.
   let pat = a:f ? g:fchar : (a:fwd ? '\_.\ze'.g:fchar : g:fchar.'\zs\_.')
@@ -64,46 +104,6 @@ function! GetVisualPos()
   endif
   return pos1 == pos3 ? pos2 : pos1
 endfunction
-
-function! s:next_char_pos_visual(occurrence) "{{{
-  let orig_pos = getpos('.')
-  let prev_pos = orig_pos
-  let occ = a:occurrence
-  let cnt = 0
-  while cnt < occ
-    exe "normal! f" . g:fchar
-    let new_pos = getpos('.')
-    if new_pos[2] != prev_pos[2]
-      " found one
-      let prev_pos = new_pos
-      let cnt += 1
-      "break
-    else
-      let prev_pos = new_pos
-      normal! j0
-      if getline('.')[0] == g:fchar
-        " found one at the start of a line
-        let prev_pos = new_pos
-        let new_pos = getpos('.')
-        let cnt += 1
-        "break
-      else
-        let new_pos = getpos('.')
-        if new_pos[1] == prev_pos[1]
-          " last line in the buffer
-          " abort and return to original position
-          call setpos('.', orig_pos)
-          let new_pos = orig_pos
-          break
-        else
-          let prev_pos = new_pos
-        endif
-      endif
-    endif
-  endwhile
-  call setpos('.', orig_pos)
-  return new_pos
-endfunction "}}}
 
 function! s:set_find_char(args)
   "call inputsave()
@@ -186,23 +186,43 @@ function! OperatorNextChar(count, char, f, fwd)
   normal! `[v`]
 endfunction
 
-nnoremap  <silent> f :<C-U>call NextChar(v:count1, ''     , 'f'   ,  1)<CR>
-nnoremap  <silent> F :<C-U>call NextChar(v:count1, ''     , 'F'   ,  0)<CR>
-nnoremap  <silent> t :<C-U>call NextChar(v:count1, ''     , 't'   ,  1)<CR>
-nnoremap  <silent> T :<C-U>call NextChar(v:count1, ''     , 'T'   ,  0)<CR>
-nnoremap  <silent> ; :<C-U>call NextChar(v:count1, g:fchar, g:ff, -1)<CR>
-nnoremap  <silent> , :<C-U>call NextChar(v:count1, g:fchar, g:ff, -2)<CR>
+" Maps: {{{1
 
-vnoremap  <silent> f :<C-U>call VisualNextChar(v:count1, ''     , 'f'   ,  1)<CR>
-vnoremap  <silent> F :<C-U>call VisualNextChar(v:count1, ''     , 'F'   ,  0)<CR>
-vnoremap  <silent> t :<C-U>call VisualNextChar(v:count1, ''     , 't'   ,  1)<CR>
-vnoremap  <silent> T :<C-U>call VisualNextChar(v:count1, ''     , 'T'   ,  0)<CR>
-vnoremap  <silent> ; :<C-U>call VisualNextChar(v:count1, g:fchar, g:ff, -1)<CR>
-vnoremap  <silent> , :<C-U>call VisualNextChar(v:count1, g:fchar, g:ff, -2)<CR>
+nnoremap  <Plug>fanfingtastic_f :<C-U>call NextChar(v:count1, ''     , 'f'   ,  1)<CR>
+nnoremap  <Plug>fanfingtastic_F :<C-U>call NextChar(v:count1, ''     , 'F'   ,  0)<CR>
+nnoremap  <Plug>fanfingtastic_t :<C-U>call NextChar(v:count1, ''     , 't'   ,  1)<CR>
+nnoremap  <Plug>fanfingtastic_T :<C-U>call NextChar(v:count1, ''     , 'T'   ,  0)<CR>
+nnoremap  <Plug>fanfingtastic_; :<C-U>call NextChar(v:count1, g:fchar, g:ff, -1)<CR>
+nnoremap  <Plug>fanfingtastic_, :<C-U>call NextChar(v:count1, g:fchar, g:ff, -2)<CR>
 
-onoremap  <silent> f :<C-U>call OperatorNextChar(v:count1, ''     , 'f'   ,  1)<CR>
-onoremap  <silent> F :<C-U>call OperatorNextChar(v:count1, ''     , 'F'   ,  0)<CR>
-onoremap  <silent> t :<C-U>call OperatorNextChar(v:count1, ''     , 't'   ,  1)<CR>
-onoremap  <silent> T :<C-U>call OperatorNextChar(v:count1, ''     , 'T'   ,  0)<CR>
-onoremap  <silent> ; :<C-U>call OperatorNextChar(v:count1, g:fchar, g:ff, -1)<CR>
-onoremap  <silent> , :<C-U>call OperatorNextChar(v:count1, g:fchar, g:ff, -2)<CR>
+vnoremap  <Plug>fanfingtastic_f :<C-U>call VisualNextChar(v:count1, ''     , 'f'   ,  1)<CR>
+vnoremap  <Plug>fanfingtastic_F :<C-U>call VisualNextChar(v:count1, ''     , 'F'   ,  0)<CR>
+vnoremap  <Plug>fanfingtastic_t :<C-U>call VisualNextChar(v:count1, ''     , 't'   ,  1)<CR>
+vnoremap  <Plug>fanfingtastic_T :<C-U>call VisualNextChar(v:count1, ''     , 'T'   ,  0)<CR>
+vnoremap  <Plug>fanfingtastic_; :<C-U>call VisualNextChar(v:count1, g:fchar, g:ff, -1)<CR>
+vnoremap  <Plug>fanfingtastic_, :<C-U>call VisualNextChar(v:count1, g:fchar, g:ff, -2)<CR>
+
+onoremap  <Plug>fanfingtastic_f :<C-U>call OperatorNextChar(v:count1, ''     , 'f'   ,  1)<CR>
+onoremap  <Plug>fanfingtastic_F :<C-U>call OperatorNextChar(v:count1, ''     , 'F'   ,  0)<CR>
+onoremap  <Plug>fanfingtastic_t :<C-U>call OperatorNextChar(v:count1, ''     , 't'   ,  1)<CR>
+onoremap  <Plug>fanfingtastic_T :<C-U>call OperatorNextChar(v:count1, ''     , 'T'   ,  0)<CR>
+onoremap  <Plug>fanfingtastic_; :<C-U>call OperatorNextChar(v:count1, g:fchar, g:ff, -1)<CR>
+onoremap  <Plug>fanfingtastic_, :<C-U>call OperatorNextChar(v:count1, g:fchar, g:ff, -2)<CR>
+
+for m in ['n', 'v', 'o']
+  for c in ['f', 'F', 't', 'T', ';', ',']
+    if !hasmapto('<Plug>fanfingtastic_' . c, m)
+      echom m . 'map <unique><silent> ' . c . ' <Plug>fanfingtastic_' . c
+      exec m . 'map <unique><silent> ' . c . ' <Plug>fanfingtastic_' . c
+    endif
+  endfor
+endfor
+" Commands: {{{1
+command! -nargs=0 -bar MyCommand1 call <SID>MyScriptLocalFunction()
+command! -nargs=0 -bar MyCommand2 call MyPublicFunction()
+
+" Teardown:{{{1
+"reset &cpo back to users setting
+let &cpo = s:save_cpo
+
+" vim: set sw=2 sts=2 et fdm=marker:
