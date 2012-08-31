@@ -56,7 +56,6 @@ function! s:search(fwd, f, ...) "{{{2
   " Define what will be searched.
   let cpat = s:str2coll(g:fchar)
   let pat = a:f ? cpat : (a:fwd ? '\_.\ze' . cpat : cpat . '\zs\_.')
-  echom 'pat: ' . pat
   let b_flag = a:fwd ? '' : 'b'
   " This is for the tx todo.
   let c_flag = !a:0 ? '' : (a:1 && !a:f ? 'c' : '')
@@ -128,7 +127,6 @@ function! s:set_find_char(args) "{{{2
   else
     let g:fchar = nr2char(getchar())
   endif
-  echom 'g:fchar: ' . g:fchar
   "call inputrestore()
 endfunction
 
