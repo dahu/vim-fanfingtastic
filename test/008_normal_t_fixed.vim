@@ -12,8 +12,9 @@ another line with ~ and * here
 let g:fanfingtastic_fix_t = 1
 
 runtime plugin/fanfingtastic.vim
+
 " t {{{1
-call LineColPos(1, 2, 'normal 1G0tc')  " <== XXX Account tor 4 tests each call XXX
+call LineColPos(1, 2, 'normal 1G0tc')  " <== XXX Account tor 2 tests each call XXX
 
 call LineColPos(1, 6, 'normal 1G02tc')
 
