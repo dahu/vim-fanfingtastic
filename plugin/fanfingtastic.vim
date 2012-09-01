@@ -1,6 +1,6 @@
 " Vim global plugin to enhace f/F/t/T/;/,
-" Maintainer:	Israel Chauca F. <israelchauca@gmail.com>
-"		Barry Arthur <barry.arthur@gmail.com>
+" Maintainer:	Barry Arthur <barry.arthur@gmail.com>
+"		Israel Chauca F. <israelchauca@gmail.com>
 " Version:	0.1
 " Description:	Fanf,ingTastic; is a Vim plugin that enhances the builtin
 "		f/F/t/T/;/, keys.
@@ -46,7 +46,8 @@ endif
 
 " Private Functions: {{{1
 function! s:get(var) "{{{2
-  return eval('s:'.a:var)
+  let var = 's:'.a:var
+  return exists(var) ? eval(var) : ''
 endfunction
 
 function! s:str2coll(str) "{{{2
@@ -135,6 +136,9 @@ function! s:set_find_char(args) "{{{2
 endfunction
 
 function! s:next_char(count, char, f, fwd) "{{{2
+  if a:fwd < 0 && !exists('s:ff')
+    return [0,0]
+  endif
   let s:ffwd = a:fwd < 0 ? s:ffwd : a:fwd
   let fwd = a:fwd >= 0 ? s:ffwd : (a:fwd == -1 ? s:ffwd : !s:ffwd)
   let s:ff = a:f
