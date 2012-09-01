@@ -44,6 +44,10 @@ if !exists('g:fanfingtastic_fix_t')
   let g:fanfingtastic_fix_t = 0
 endif
 
+if !exists('g:fanfingtastic_use_jumplist')
+  let g:fanfingtastic_use_jumplist = 0
+endif
+
 " Private Functions: {{{1
 function! s:get(var) "{{{2
   let var = 's:'.a:var
@@ -138,6 +142,9 @@ endfunction
 function! s:next_char(count, char, f, fwd) "{{{2
   if a:fwd < 0 && !exists('s:ff')
     return [0,0]
+  endif
+  if g:fanfingtastic_use_jumplist
+    normal! m'
   endif
   let s:ffwd = a:fwd < 0 ? s:ffwd : a:fwd
   let fwd = a:fwd >= 0 ? s:ffwd : (a:fwd == -1 ? s:ffwd : !s:ffwd)
