@@ -4,3 +4,10 @@
     assign_alias('b', '()')
     assign_alias('B', '{}')
 
+
+* Fix visual block mode bug: <c-v>jjf sfoo<esc>
+  some text
+  some text
+  some text
+
+* expose next_char() as a global or through an autoload restructure
