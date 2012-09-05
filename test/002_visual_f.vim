@@ -1,5 +1,5 @@
 call vimtest#StartTap()
-call vimtap#Plan(42) " <== XXX  Keep plan number updated.  XXX
+call vimtap#Plan(43) " <== XXX  Keep plan number updated.  XXX
 "call vimtap#Diag('Test')
 append
 abc abc abc abc abc abc
@@ -53,4 +53,12 @@ normal 1G0vfey
 call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
 call VisualMatch("abc abc abc abc abc abc\nabcd abcd abcd abcd abcd\nabcde")
 
+%d
+append
+some text
+some text
+some text
+.
+exec "normal gg0\<C-V>2jf sfoo\<ESC>"
+call vimtap#Is(getline(1,'$'), ['footext', 'footext', 'footext'], 'Preserve visual mode.')
 call vimtest#Quit()
