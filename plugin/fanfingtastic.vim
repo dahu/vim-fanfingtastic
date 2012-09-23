@@ -206,7 +206,7 @@ endfunction
 
 function! s:operator_next_char(count, char, f, fwd) "{{{2
   let curpos = getpos('.')
-  let curpos[2] -= 1
+  let curpos[2] -= a:fwd ? 0 : 1
   call setpos("'[", curpos)
   let pos = [0] + s:next_char(a:count, a:char, a:f, a:fwd) + [0]
   if pos[1] == 0
