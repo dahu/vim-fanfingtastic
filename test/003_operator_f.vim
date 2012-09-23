@@ -1,5 +1,5 @@
 call vimtest#StartTap()
-call vimtap#Plan(30) " <== XXX  Keep plan number updated.  XXX
+call vimtap#Plan(32) " <== XXX  Keep plan number updated.  XXX
 "call vimtap#Diag('Test')
 
 function! s:reset()
@@ -8,6 +8,7 @@ function! s:reset()
 abc abc abc abc abc abc
 abcd abcd abcd abcd abcd
 abcde
+(some words here)
 .
 endfunction
 
@@ -37,6 +38,11 @@ for loop in range(2)
   normal 1G0g~2fc
   call LineColPos(1, 1)
   call LineMatch(1, 'ABC ABC abc abc abc abc')  "xyz abc abc...
+
+  " delete from ) under cursor back should preserve )
+  call s:reset()
+  normal 4G$dFh
+  call LineMatch(4, '(some words )')
 
   %d
   runtime plugin/fanfingtastic.vim
