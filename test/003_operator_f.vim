@@ -1,5 +1,5 @@
 call vimtest#StartTap()
-call vimtap#Plan(32) " <== XXX  Keep plan number updated.  XXX
+call vimtap#Plan(34) " <== XXX  Keep plan number updated.  XXX
 "call vimtap#Diag('Test')
 
 function! s:reset()
@@ -43,6 +43,11 @@ for loop in range(2)
   call s:reset()
   normal 4G$dFh
   call LineMatch(4, '(some words )')
+
+  " Make sure we always start from the cursor when going forward.
+  call s:reset()
+  normal 2G3|dfd
+  call LineMatch(2, 'ab abcd abcd abcd abcd')
 
   %d
   runtime plugin/fanfingtastic.vim
