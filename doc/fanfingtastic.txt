@@ -1,17 +1,17 @@
-*fanfingtastic.txt*	For Vim version 7.3	Last change: 2012-08-31
+*fanfingtastic.txt*	For Vim version 7.3	Last change: 2012-09-23
 
 
 			VIM REFERENCE MANUAL	by Barry Arthur
 
 
-Help on using Fanf,ingTastic;                                           *fanfingtastic*
+Help on using Fanf,ingTastic;                                    *fanfingtastic*
 
 1. Introduction				|fanfingtastic-intro|
 2. Configuration			|fanfingtastic-configuration|
 3. Authors				|fanfingtastic-authors|
 
 ==============================================================================
- 1. INTRODUCTION                                                  *fanfingtastic-intro*
+ 1. INTRODUCTION                                           *fanfingtastic-intro*
 
 Fanf,ingTastic; is a Vim plugin that enhances the builtin |F| |f| |,| |T| |t|
 and |;| keys by allowing them to wrap over lines with the full gamut of
@@ -36,20 +36,19 @@ would allow fb to search forward to the next '(' or ')' character (spanning
 lines as necessary). Likewise, TB would scan backwards (spanning lines) to
 place the cursor just to the right hand side of the '{' or '}' character prior
 to the cursor's current position. Of course, with both of these aliases
-enabled, the user will not be able to find plain 'b' or 'B' characters with the
-fFtT;, commands. See |fanfingtastic-aliases| for more details.
+enabled, the user will not be able to find plain 'b' or 'B' characters with
+the fFtT;, commands. See |fanfingtastic-aliases| for more details.
 
 ==============================================================================
- 2. CONFIGURATION                                         *fanfingtastic-configuration*
-
-                                                                *fanfingtastic-aliases*
+ 2. CONFIGURATION                                  *fanfingtastic-configuration*
+                                                         *fanfingtastic-aliases*
 The following options alter the behaviour of Fanf,ingTastic;
 
-|'fanfingtastic_ignorecase'|		Provides case insensitive FfTt,; finding.
-|'fanfingtastic_all_inclusive'|	      Makes backward movements to be |inclusive|.
+|'fanfingtastic_ignorecase'|	Provides case insensitive FfTt,; finding.
+|'fanfingtastic_all_inclusive'|	Makes backward movements to be |inclusive|.
 
 ------------------------------------------------------------------------------
-                                                           *'fanfingtastic-ignorecase'*
+                                                    *'fanfingtastic-ignorecase'*
 Values: boolean
 Default: 0                                                                   ~
 
@@ -75,7 +74,7 @@ your $MYVIMRC:
 <
 
 ==============================================================================
- 3. AUTHORS                                                    *fanfingtastic-authors*
+ 3. AUTHORS                                              *fanfingtastic-authors*
 
 Fanf,ingTastic; is maintained by:
 
