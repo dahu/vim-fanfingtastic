@@ -46,6 +46,7 @@ fFtT;, commands. See |fanfingtastic-aliases| for more details.
 The following options alter the behaviour of Fanf,ingTastic;
 
 |'fanfingtastic_ignorecase'|		Provides case insensitive FfTt,; finding.
+|'fanfingtastic_all_inclusive'|	      Makes backward movements to be |inclusive|.
 
 ------------------------------------------------------------------------------
                                                            *'fanfingtastic-ignorecase'*
@@ -58,6 +59,19 @@ next 'x' or 'X' character. To enable this, add the following line to your
 $MYVIMRC:
 >
   let g:fanfingtastic_ignorecase = 1
+<
+
+------------------------------------------------------------------------------
+                                                 *'fanfingtastic-all_inclusive'*
+Values: boolean
+Default: 0                                                                   ~
+
+Backward movements (namely F, T and ; or , depending on the last movement) are
+|exclusive| by default, 'fanfingtastic_all_inclusive' changes that so they
+behave like |inclusive| movements. To enable this, add the following line to
+your $MYVIMRC:
+>
+  let g:fanfingtastic_all_inclusive = 1
 <
 
 ==============================================================================
