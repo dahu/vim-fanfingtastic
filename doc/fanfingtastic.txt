@@ -44,11 +44,42 @@ the fFtT;, commands. See |fanfingtastic-aliases| for more details.
                                                          *fanfingtastic-aliases*
 The following options alter the behaviour of Fanf,ingTastic;
 
-|'fanfingtastic_ignorecase'|	Provides case insensitive FfTt,; finding.
 |'fanfingtastic_all_inclusive'|	Makes backward movements to be |inclusive|.
+|'fanfingtastic_fix_t'|		Fixes the behavior of tT,; and a count.
+|'fanfingtastic_ignorecase'|	Provides case insensitive FfTt,; finding.
+|'fanfingtastic_use_jumplist'|	Adds the movements with fFtT;, to the |jumplist|.
+
+------------------------------------------------------------------------------
+                                                 *'fanfingtastic-all-inclusive'*
+                                               *'g:fanfingtastic_all_inclusive'*
+Values: boolean
+Default: 0                                                                   ~
+
+Backward movements (namely F, T and ; or , depending on the last movement) are
+|exclusive| by default, 'fanfingtastic_all_inclusive' changes that so they
+behave like |inclusive| movements. To enable this, add the following line to
+your $MYVIMRC:
+>
+  let g:fanfingtastic_all_inclusive = 1
+<
+
+------------------------------------------------------------------------------
+                                                         *'fanfingtastic-fix-t'*
+                                                       *'g:fanfingtastic_fix_t'*
+Values: boolean
+Default: 0                                                                   ~
+
+The commands |t| and |T| when used with the cursor right in front of the
+searched character will decrease the given |count| by 1. Enabling
+'fanfingtastic_fix_t' changes that so that Vim uses the given count as
+expected. To enable this, add the following line to your $MYVIMRC:
+>
+  let g:fanfingtastic_fix_t = 1
+<
 
 ------------------------------------------------------------------------------
                                                     *'fanfingtastic-ignorecase'*
+                                                  *'g:fanfingtastic_ignorecase'*
 Values: boolean
 Default: 0                                                                   ~
 
@@ -61,16 +92,15 @@ $MYVIMRC:
 <
 
 ------------------------------------------------------------------------------
-                                                 *'fanfingtastic-all_inclusive'*
+                                                  *'fanfingtastic-use-jumplist'*
+                                                *'g:fanfingtastic_use_jumplist'*
 Values: boolean
 Default: 0                                                                   ~
 
-Backward movements (namely F, T and ; or , depending on the last movement) are
-|exclusive| by default, 'fanfingtastic_all_inclusive' changes that so they
-behave like |inclusive| movements. To enable this, add the following line to
-your $MYVIMRC:
+When this option is enabled movements made with fFtT;, will be added to the
+|jumplist|. To enable this, add the following line to your $MYVIMRC:
 >
-  let g:fanfingtastic_all_inclusive = 1
+  let g:fanfingtastic_use_jumplist = 1
 <
 
 ==============================================================================
