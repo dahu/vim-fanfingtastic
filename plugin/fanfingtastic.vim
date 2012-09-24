@@ -48,6 +48,10 @@ if !exists('g:fanfingtastic_use_jumplist')
   let g:fanfingtastic_use_jumplist = 0
 endif
 
+if !exists('g:fanfingtastic_all_inclusive')
+  let g:fanfingtastic_all_inclusive = 0
+endif
+
 " Private Functions: {{{1
 function! s:get(var) "{{{2
   let var = 's:'.a:var
@@ -206,7 +210,7 @@ endfunction
 
 function! s:operator_next_char(count, char, f, fwd) "{{{2
   let curpos = getpos('.')
-  let curpos[2] -= a:fwd ? 0 : 1
+  let curpos[2] -= (g:fanfingtastic_all_inclusive || a:fwd) ? 0 : 1
   call setpos("'[", curpos)
   let pos = [0] + s:next_char(a:count, a:char, a:f, a:fwd) + [0]
   if pos[1] == 0
