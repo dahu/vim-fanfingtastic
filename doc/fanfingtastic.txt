@@ -29,8 +29,8 @@ Aliases~
 Fanf,ingTastic; allows you to create aliases which specify a set of characters
 that will be scanned for when FfTt;, is used on that alias. For example:
 >
-  :call fanfingtastic#assign_alias('b', '()')
-  :call fanfingtastic#assign_alias('B', '{}')
+  :FanfingTasticAlias b ()
+  :FanfingTasticAlias B {}
 <
 would allow fb to search forward to the next '(' or ')' character (spanning
 lines as necessary). Likewise, TB would scan backwards (spanning lines) to
