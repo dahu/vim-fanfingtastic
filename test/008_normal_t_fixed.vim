@@ -1,5 +1,5 @@
 call vimtest#StartTap()
-call vimtap#Plan(86) " <== XXX  Keep plan number updated.  XXX
+call vimtap#Plan(87) " <== XXX  Keep plan number updated.  XXX
 "call vimtap#Diag('Test')
 append
 abc abc abc abc abc abc
@@ -33,6 +33,26 @@ call LineColPos(1, 20, 'normal 1G20|tc,')
 call LineColPos(1, 16, 'normal 1G20|tc2,')
 
 call LineColPos(1, 12, 'normal 1G16|2tc3,')
+
+append
+abc abc abc abc abc abc
+abcd abcd abcd abcd abcd
+abcde
+a line with ~ and * here
+another line with ~ and * here
+.
+
+normal! ggctd
+call vimtap#Is(getline(1), 'd abcd abcd abcd abcd', 'change text')
+undo
+
+append
+abc abc abc abc abc abc
+abcd abcd abcd abcd abcd
+abcde
+a line with ~ and * here
+another line with ~ and * here
+.
 
 " T {{{1
 call LineColPos(1, 22, 'normal 1G$Ta')
