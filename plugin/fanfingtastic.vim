@@ -133,7 +133,10 @@ endfunction
 
 function! s:set_find_char(args, cmd, a) "{{{2
   "call inputsave()
-  if a:a >= 0
+  " Do not use this if 'showcmd' is not set or running tests.
+  let showcmd = a:a >= 0 && &showcmd && !exists('g:runVimTests')
+  if showcmd && 0
+    " show command.
     let lead = repeat(' ', &columns - 11)
     let cr = repeat("\n", &cmdheight - 1)
     echon cr . lead . a:cmd
@@ -147,8 +150,8 @@ function! s:set_find_char(args, cmd, a) "{{{2
     let s:fchar = nr2char(getchar())
   endif
   "call inputrestore()
-  if a:a >= 0
-    call feedkeys("\<Esc>", 'n')
+  if showcmd && 0
+    call feedkeys((v:operator ==# 'c' ? "\<CR>" : "\<Esc>"), 'n')
   endif
 endfunction
 
