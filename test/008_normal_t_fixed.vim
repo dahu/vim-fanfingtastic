@@ -34,18 +34,9 @@ call LineColPos(1, 16, 'normal 1G20|tc2,')
 
 call LineColPos(1, 12, 'normal 1G16|2tc3,')
 
-append
-abc abc abc abc abc abc
-abcd abcd abcd abcd abcd
-abcde
-a line with ~ and * here
-another line with ~ and * here
-.
-
-normal! ggctd
+normal ggctd
 call vimtap#Is(getline(1), 'd abcd abcd abcd abcd', 'change text')
-undo
-
+%d
 append
 abc abc abc abc abc abc
 abcd abcd abcd abcd abcd
