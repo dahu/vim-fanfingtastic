@@ -220,15 +220,20 @@ function! s:visual_next_char(count, char, f, fwd) "{{{2
   exec 'normal! `[' . vmode . '`]'
 endfunction
 
+"this_is_a_test
+
 function! s:operator_next_char(count, char, f, fwd) "{{{2
   let curpos = getpos('.')
   let curpos[2] -= (g:fanfingtastic_all_inclusive || a:fwd) ? 0 : 1
   call setpos("'[", curpos)
+  call setpos("']", curpos)
   let pos = [0] + s:next_char(a:count, a:char, a:f, a:fwd) + [0]
-  if pos[1] == 0
-    return ''
+  "if pos[1] == 0
+    "return ''
+  "endif
+  if pos[1] != 0
+    call setpos("']", pos)
   endif
-  call setpos("']", pos)
   normal! `[v`]
 endfunction
 

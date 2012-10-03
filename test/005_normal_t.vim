@@ -1,5 +1,5 @@
 call vimtest#StartTap()
-call vimtap#Plan(126) " <== XXX  Keep plan number updated.  XXX
+call vimtap#Plan(132) " <== XXX  Keep plan number updated.  XXX
 "call vimtap#Diag('Test')
 append
 abc abc abc abc abc abc
@@ -7,6 +7,7 @@ abcd abcd abcd abcd abcd
 abcde
 a line with ~ and * here
 another line with ~ and * here
+one char change
 .
 
 " run these tests twice; the first time without f,ing loaded
@@ -52,6 +53,9 @@ for loop in range(2)
   call LineColPos(1, 8, 'normal 1G4|Ta2,')
 
   call LineColPos(1, 12, 'normal 1G8|2Ta3,')
+
+  call LineColPos(6, 3, 'normal 6G3|ct a')
+  call LineMatch(6, 'ona char change')
 
   runtime plugin/fanfingtastic.vim
 endfor
