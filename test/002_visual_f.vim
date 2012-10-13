@@ -1,10 +1,11 @@
 call vimtest#StartTap()
-call vimtap#Plan(43) " <== XXX  Keep plan number updated.  XXX
+call vimtap#Plan(49) " <== XXX  Keep plan number updated.  XXX
 "call vimtap#Diag('Test')
 append
 abc abc abc abc abc abc
 abcd abcd abcd abcd abcd
 abcde
+one two three four five six
 .
 
 " run these tests twice; the first time without f,ing loaded
@@ -25,6 +26,10 @@ for loop in range(2)
   normal 1G0fcv2fc2;y
   call LineColPos(1, 3)
   call VisualMatch('c abc abc abc abc')
+
+  normal 4G$hviwoF ;y
+  call LineColPos(4, 19)
+  call VisualMatch(' five six')
 
   runtime plugin/fanfingtastic.vim
 endfor

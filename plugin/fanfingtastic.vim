@@ -152,7 +152,8 @@ function! s:set_find_char(args, cmd, a) "{{{2
   endif
   "call inputrestore()
   if showcmd
-    call feedkeys((v:operator ==# 'c' ? "\<CR>" : "\<Esc>"), 'n')
+    "call feedkeys((v:operator ==# 'c' ? "\<CR>" : "\<Esc>"), 'n')
+    call feedkeys("\<CR>", 'n')
   endif
 endfunction
 
