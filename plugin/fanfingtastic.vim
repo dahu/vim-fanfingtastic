@@ -40,6 +40,10 @@ if !exists('g:fanfingtastic_ignorecase')
   let g:fanfingtastic_ignorecase = 0
 endif
 
+if !exists('g:fanfingtastic_map_over_leader')
+  let g:fanfingtastic_map_over_leader = 0
+endif
+
 if !exists('g:fanfingtastic_fix_t')
   let g:fanfingtastic_fix_t = 0
 endif
@@ -296,6 +300,9 @@ onoremap  <Plug>fanfingtastic_, :<C-U>call <SID>operator_next_char(v:count1, <SI
 for m in ['n', 'v', 'o']
   for c in ['f', 'F', 't', 'T', ';', ',']
     if !hasmapto('<Plug>fanfingtastic_' . c, m)
+      if (c == g:mapleader) && (g:fanfingtastic_map_over_leader == 0)
+        continue
+      endif
       sil! exec m . 'map <unique><silent> ' . c . ' <Plug>fanfingtastic_' . c
     endif
   endfor

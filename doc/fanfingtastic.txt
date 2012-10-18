@@ -45,6 +45,8 @@ the fFtT;, commands. See |fanfingtastic-aliases| for more details.
 The following options alter the behaviour of Fanf,ingTastic;
 
 |'fanfingtastic_all_inclusive'|	Makes backward movements to be |inclusive|.
+|'fanfingtastic_map_over_leader'|	Maps over [,;] even if they are the
+				current |mapleader|.
 |'fanfingtastic_fix_t'|		Fixes the behavior of tT,; and a count.
 |'fanfingtastic_ignorecase'|	Provides case insensitive FfTt,; finding.
 |'fanfingtastic_use_jumplist'|	Adds the movements with fFtT;, to the |jumplist|.
@@ -62,6 +64,20 @@ your $MYVIMRC:
 >
   let g:fanfingtastic_all_inclusive = 1
 <
+
+------------------------------------------------------------------------------
+                                               *'fanfingtastic-map-over-leader'*
+                                             *'g:fanfingtastic_map_over_leader'*
+Values: boolean
+Default: 0                                                                   ~
+
+Fanf,ingTastic; maps over the [fFtT,;] keys in its aim to fully emulate and
+augment the equivalent builtin functionality. Some people however prefer to
+use either the comma or semicolon key as their |mapleader|. By default,
+Fanf,ingTastic; will not map over your mapleader. To allow this, add the
+following line to your $MYVIMRC:
+>
+  let g:fanfingtastic_map_over_leader = 1 <
 
 ------------------------------------------------------------------------------
                                                          *'fanfingtastic-fix-t'*
