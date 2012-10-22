@@ -297,11 +297,13 @@ onoremap  <Plug>fanfingtastic_T :<C-U>call <SID>operator_next_char(v:count1, '' 
 onoremap  <Plug>fanfingtastic_; :<C-U>call <SID>operator_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -1)<CR>
 onoremap  <Plug>fanfingtastic_, :<C-U>call <SID>operator_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -2)<CR>
 
-for m in ['n', 'v', 'o']
+for m in ['n', 'x', 'o']
   for c in ['f', 'F', 't', 'T', ';', ',']
     if !hasmapto('<Plug>fanfingtastic_' . c, m)
-      if (c == g:mapleader) && (g:fanfingtastic_map_over_leader == 0)
-        continue
+      if !exists('g:runVimTests')
+        if (c == g:mapleader) && (g:fanfingtastic_map_over_leader == 0)
+          continue
+        endif
       endif
       sil! exec m . 'map <unique><silent> ' . c . ' <Plug>fanfingtastic_' . c
     endif
