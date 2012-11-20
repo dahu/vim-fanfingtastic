@@ -301,7 +301,7 @@ for m in ['n', 'x', 'o']
   for c in ['f', 'F', 't', 'T', ';', ',']
     if !hasmapto('<Plug>fanfingtastic_' . c, m)
       if !exists('g:runVimTests')
-        if (c == g:mapleader) && (g:fanfingtastic_map_over_leader == 0)
+        if exists('g:mapleader') && (c == g:mapleader) && (g:fanfingtastic_map_over_leader == 0)
           continue
         endif
       endif
