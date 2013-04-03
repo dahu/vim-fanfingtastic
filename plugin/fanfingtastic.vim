@@ -329,7 +329,7 @@ command! -nargs=+ -bar -bang FanfingTasticAlias call <SID>define_alias(<f-args>,
 " without it, the first   dfx   results in the deletion but then the cursor is
 " moved down to the start of the line below, instead of leaving it at the end
 " of the deletion point.
-call repeat#run(0)
+silent! call repeat#run(0)
 
 " Teardown:{{{1
 "reset &cpo back to users setting
