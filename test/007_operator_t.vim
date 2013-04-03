@@ -1,5 +1,5 @@
 call vimtest#StartTap()
-call vimtap#Plan(30) " <== XXX  Keep plan number updated.  XXX
+call vimtap#Plan(66) " <== XXX  Keep plan number updated.  XXX
 "call vimtap#Diag('Test')
 
 function! s:reset()
@@ -8,6 +8,12 @@ function! s:reset()
 abc abc abc abc abc abc
 abcd abcd abcd abcd abcd
 abcde
+type == assigned
+type == assigned
+type == assigned
+type == assigned
+let somevar -= 1000
+let somevar -= 1000
 .
 endfunction
 
@@ -38,32 +44,42 @@ for loop in range(2)
   call LineColPos(1, 1)
   call LineMatch(1, 'ABC ABc abc abc abc abc')  "xyz abc abc...
 
+  call s:reset()
+  normal 4G0df .
+  call LineColPos(4, 1)
+  call LineMatch(4, 'assigned')
+
+  call s:reset()
+  normal 5G$dF .
+  call LineColPos(5, 5)
+  call LineMatch(5, 'typed')
+
+  call s:reset()
+  normal 6G0dt .
+  call LineColPos(6, 1)
+  call LineMatch(6, ' assigned')
+
+  " dT
+  call s:reset()
+  normal 7G$dT h.
+  call LineColPos(7, 6)
+  call LineMatch(7, 'type  d')
+
+  " d;.
+  call s:reset()
+  normal 8G0df d;.
+  call LineColPos(8, 1)
+  call LineMatch(8, '1000')
+
+  " d,.
+  call s:reset()
+  normal 9G$bbdf d,.
+  call LineColPos(9, 4)
+  call LineMatch(9, 'let1000')
+
   %d
   runtime plugin/fanfingtastic.vim
 endfor
 
-"normal 1G0v7tcy
-"call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
-"call VisualMatch("abc abc abc abc abc abc\nabc")
-
-"normal 1G0vtdy
-"call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
-"call VisualMatch("abc abc abc abc abc abc\nabcd")
-
-"normal 1G0v2tdy
-"call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
-"call VisualMatch("abc abc abc abc abc abc\nabcd abcd")
-
-"normal 1G0vtd;y
-"call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
-"call VisualMatch("abc abc abc abc abc abc\nabcd abcd")
-
-"normal 1G0v2td3;y
-"call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
-"call VisualMatch("abc abc abc abc abc abc\nabcd abcd abcd abcd abcd")
-
-"normal 1G0vtey
-"call LineColPos(1, 1)  " <== XXX Account for 2 tests each call XXX
-"call VisualMatch("abc abc abc abc abc abc\nabcd abcd abcd abcd abcd\nabcde")
 
 call vimtest#Quit()

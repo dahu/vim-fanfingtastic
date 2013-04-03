@@ -14,7 +14,7 @@
 " :helptags ~/.vim/doc
 " :help fanfingtastic
 
-let g:fanfingtastic_version = '0.1'
+let g:fanfingtastic_version = '0.2'  " added . support using tpope's repeat
 
 " Vimscript Setup: {{{1
 " Allow use of line continuation.
@@ -139,13 +139,13 @@ function! s:set_find_char(args, cmd, a) "{{{2
   "call inputsave()
   " Do not use this if 'showcmd' is not set or running tests.
   " this_is_a_test
-  let showcmd = a:a >= 0 && &showcmd && !exists('g:runVimTests')
-  if showcmd
-    " show command.
-    let lead = repeat(' ', &columns - 11)
-    let cr = repeat("\n", &cmdheight - 1)
-    echon cr . lead . a:cmd
-  endif
+  " let showcmd = a:a >= 0 && &showcmd && !exists('g:runVimTests')
+  " if showcmd
+  "   " show command.
+  "   let lead = repeat(' ', &columns - 11)
+  "   let cr = repeat("\n", &cmdheight - 1)
+  "   echon cr . lead . a:cmd
+  " endif
 
   if type(a:args) == type('')
     let s:fchar = empty(a:args) ? nr2char(getchar()) : a:args
@@ -155,10 +155,10 @@ function! s:set_find_char(args, cmd, a) "{{{2
     let s:fchar = nr2char(getchar())
   endif
   "call inputrestore()
-  if showcmd
-    "call feedkeys((v:operator ==# 'c' ? "\<CR>" : "\<Esc>"), 'n')
-    call feedkeys("\<CR>", 'n')
-  endif
+  " if showcmd
+  "   "call feedkeys((v:operator ==# 'c' ? "\<CR>" : "\<Esc>"), 'n')
+  "   call feedkeys("\<CR>", 'n')
+  " endif
 endfunction
 
 function! s:next_char(count, char, f, fwd) "{{{2
@@ -226,7 +226,18 @@ function! s:visual_next_char(count, char, f, fwd) "{{{2
   exec 'normal! `[' . vmode . '`]'
 endfunction
 
-"this_is_a_test
+" guns' awesome workaround for ./repeat issue
+" https://github.com/tpope/vim-repeat/issues/8
+function! RepeatSet(buf)
+  call repeat#set(a:buf)
+
+  augroup repeat_tick
+    autocmd!
+    autocmd CursorMoved <buffer>
+          \ let g:repeat_tick = b:changedtick
+          \ | autocmd! repeat_tick
+  augroup END
+endfunction
 
 function! s:operator_next_char(count, char, f, fwd) "{{{2
   let curpos = getpos('.')
@@ -240,6 +251,7 @@ function! s:operator_next_char(count, char, f, fwd) "{{{2
   if pos[1] != 0
     call setpos("']", pos)
   endif
+  silent! call RepeatSet(v:operator . "\<Plug>fanfingtastic_" . a:f . s:fchar)
   normal! `[v`]
 endfunction
 
@@ -309,8 +321,15 @@ for m in ['n', 'x', 'o']
     endif
   endfor
 endfor
+
 " Commands: {{{1
 command! -nargs=+ -bar -bang FanfingTasticAlias call <SID>define_alias(<f-args>, <bang>0)
+
+" no idea why this is necessary... tpope?
+" without it, the first   dfx   results in the deletion but then the cursor is
+" moved down to the start of the line below, instead of leaving it at the end
+" of the deletion point.
+call repeat#run(0)
 
 " Teardown:{{{1
 "reset &cpo back to users setting
