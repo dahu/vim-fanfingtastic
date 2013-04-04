@@ -251,7 +251,9 @@ function! s:operator_next_char(count, char, f, fwd) "{{{2
   if pos[1] != 0
     call setpos("']", pos)
   endif
-  silent! call RepeatSet(v:operator . "\<Plug>fanfingtastic_" . a:f . s:fchar)
+  " Use the dot register to repeat with the c-hange operator.
+  let sufix = v:operator ==# 'c' ? "\<C-R>.\<Esc>" : ""
+  silent! call RepeatSet(v:operator . "\<Plug>fanfingtastic_" . a:f . s:fchar . sufix)
   normal! `[v`]
 endfunction
 
