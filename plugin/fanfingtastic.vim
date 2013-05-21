@@ -304,12 +304,12 @@ vnoremap  <Plug>fanfingtastic_T :<C-U>call <SID>visual_next_char(v:count1, ''   
 vnoremap  <Plug>fanfingtastic_; :<C-U>call <SID>visual_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -1)<CR>
 vnoremap  <Plug>fanfingtastic_, :<C-U>call <SID>visual_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -2)<CR>
 
-onoremap  <Plug>fanfingtastic_f :<C-U>call <SID>operator_next_char(v:count1, ''               , 'f'           ,  1)<CR>
-onoremap  <Plug>fanfingtastic_F :<C-U>call <SID>operator_next_char(v:count1, ''               , 'F'           ,  0)<CR>
-onoremap  <Plug>fanfingtastic_t :<C-U>call <SID>operator_next_char(v:count1, ''               , 't'           ,  1)<CR>
-onoremap  <Plug>fanfingtastic_T :<C-U>call <SID>operator_next_char(v:count1, ''               , 'T'           ,  0)<CR>
-onoremap  <Plug>fanfingtastic_; :<C-U>call <SID>operator_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -1)<CR>
-onoremap  <Plug>fanfingtastic_, :<C-U>call <SID>operator_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -2)<CR>
+onoremap  <silent> <Plug>fanfingtastic_f :<C-U>call <SID>operator_next_char(v:count1, ''               , 'f'           ,  1)<CR>
+onoremap  <silent> <Plug>fanfingtastic_F :<C-U>call <SID>operator_next_char(v:count1, ''               , 'F'           ,  0)<CR>
+onoremap  <silent> <Plug>fanfingtastic_t :<C-U>call <SID>operator_next_char(v:count1, ''               , 't'           ,  1)<CR>
+onoremap  <silent> <Plug>fanfingtastic_T :<C-U>call <SID>operator_next_char(v:count1, ''               , 'T'           ,  0)<CR>
+onoremap  <silent> <Plug>fanfingtastic_; :<C-U>call <SID>operator_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -1)<CR>
+onoremap  <silent> <Plug>fanfingtastic_, :<C-U>call <SID>operator_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -2)<CR>
 
 for m in ['n', 'x', 'o']
   for c in ['f', 'F', 't', 'T', ';', ',']
@@ -326,16 +326,6 @@ endfor
 
 " Commands: {{{1
 command! -nargs=+ -bar -bang FanfingTasticAlias call <SID>define_alias(<f-args>, <bang>0)
-
-" no idea why this is necessary... tpope?
-" without it, the first   dfx   results in the deletion but then the cursor is
-" moved down to the start of the line below, instead of leaving it at the end
-" of the deletion point.
-"
-" OK... now it seems like it's *not* necessary anymore, which is good because
-" it was stuffing a spurious '.' into the input queue which showed up in
-" vim -e -s
-"silent! call repeat#run(0)
 
 " Teardown:{{{1
 "reset &cpo back to users setting
