@@ -1,4 +1,4 @@
-*fanfingtastic.txt*	For Vim version 7.3	Last change: 2012-09-23
+*fanfingtastic.txt*	Plugin that enhances the FfTt,; keys
 
 
 			VIM REFERENCE MANUAL	by Barry Arthur
