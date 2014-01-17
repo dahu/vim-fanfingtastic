@@ -323,6 +323,8 @@ for m in ['n', 'x', 'o']
     endif
   endfor
 endfor
+unlet c
+unlet m
 
 " Commands: {{{1
 command! -nargs=+ -bar -bang FanfingTasticAlias call <SID>define_alias(<f-args>, <bang>0)
