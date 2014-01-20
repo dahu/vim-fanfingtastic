@@ -44,26 +44,6 @@ let s:fwd = {
       \',': -2
       \}
 " Options: {{{1
-if !exists('g:fanfingtastic_ignorecase')
-  let g:fanfingtastic_ignorecase = 0
-endif
-
-if !exists('g:fanfingtastic_map_over_leader')
-  let g:fanfingtastic_map_over_leader = 0
-endif
-
-if !exists('g:fanfingtastic_fix_t')
-  let g:fanfingtastic_fix_t = 0
-endif
-
-if !exists('g:fanfingtastic_use_jumplist')
-  let g:fanfingtastic_use_jumplist = 0
-endif
-
-if !exists('g:fanfingtastic_all_inclusive')
-  let g:fanfingtastic_all_inclusive = 0
-endif
-
 " Private Functions: {{{1
 function! s:get(var) "{{{2
   let var = 's:'.a:var
@@ -84,7 +64,7 @@ function! s:search(fwd, f, ...) "{{{2
   let b_flag = a:fwd ? '' : 'b'
   " This is for the tx todo.
   let c_flag = !a:0 ? '' : (a:1 && !a:f ? 'c' : '')
-  let ic = g:fanfingtastic_ignorecase ? '\c' : '\C'
+  let ic = get(g:, 'fanfingtastic_ignorecase', 0) ? '\c' : '\C'
   return searchpos(ic.'\m'.pat, 'W'.b_flag.c_flag)
 endfunction
 
@@ -174,14 +154,14 @@ function! s:next_char(count, char, f, fwd) "{{{2
   if afwd < 0 && !exists('s:ff')
     return [0,0]
   endif
-  if g:fanfingtastic_use_jumplist
+  if get(g:, 'fanfingtastic_use_jumplist', 0)
     normal! m'
   endif
   let s:ffwd = afwd < 0 ? s:ffwd : afwd
   let fwd = afwd >= 0 ? s:ffwd : (afwd == -1 ? s:ffwd : !s:ffwd)
   let s:ff = a:f
   call s:set_find_char(a:char, a:f, afwd)
-  if a:f ==? 'f' || g:fanfingtastic_fix_t
+  if a:f ==? 'f' || get(g:, 'fanfingtastic_fix_t', 0)
     let ccount = a:count
   else
     " This replicates t/T/; + count behaviour.
@@ -251,7 +231,7 @@ endfunction
 function! s:operator_next_char(count, char, f, fwd) "{{{2
   " TODO when , and ; move backwards they should be exclusive motions.
   let curpos = getpos('.')
-  let curpos[2] -= (g:fanfingtastic_all_inclusive || s:fwd[a:fwd]) ? 0 : 1
+  let curpos[2] -= (get(g:, 'fanfingtastic_all_inclusive', 0) || s:fwd[a:fwd]) ? 0 : 1
   call setpos("'[", curpos)
   call setpos("']", curpos)
   let pos = [0] + s:next_char(a:count, a:char, a:f, a:fwd) + [0]
@@ -322,7 +302,7 @@ for m in ['n', 'x', 'o']
     if !hasmapto('<Plug>fanfingtastic_' . c, m)
       if !exists('g:runVimTests')
         if exists('g:mapleader') && (c == g:mapleader) &&
-              \ (g:fanfingtastic_map_over_leader == 0)
+              \ get(g:, 'fanfingtastic_map_over_leader', 0)
           continue
         endif
       endif
