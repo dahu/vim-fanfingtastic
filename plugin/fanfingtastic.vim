@@ -35,6 +35,14 @@ set cpo&vim
 "let g:loaded_fanfingtastic = 1
 
 let s:fchar = ''
+let s:fwd = {
+      \'f': 1,
+      \'F': 0,
+      \'t': 1,
+      \'T': 0,
+      \';': -1,
+      \',': -2
+      \}
 " Options: {{{1
 if !exists('g:fanfingtastic_ignorecase')
   let g:fanfingtastic_ignorecase = 0
@@ -162,23 +170,24 @@ function! s:set_find_char(args, cmd, a) "{{{2
 endfunction
 
 function! s:next_char(count, char, f, fwd) "{{{2
-  if a:fwd < 0 && !exists('s:ff')
+  let afwd = s:fwd[a:fwd]
+  if afwd < 0 && !exists('s:ff')
     return [0,0]
   endif
   if g:fanfingtastic_use_jumplist
     normal! m'
   endif
-  let s:ffwd = a:fwd < 0 ? s:ffwd : a:fwd
-  let fwd = a:fwd >= 0 ? s:ffwd : (a:fwd == -1 ? s:ffwd : !s:ffwd)
+  let s:ffwd = afwd < 0 ? s:ffwd : afwd
+  let fwd = afwd >= 0 ? s:ffwd : (afwd == -1 ? s:ffwd : !s:ffwd)
   let s:ff = a:f
-  call s:set_find_char(a:char, a:f, a:fwd)
+  call s:set_find_char(a:char, a:f, afwd)
   if a:f ==? 'f' || g:fanfingtastic_fix_t
     let ccount = a:count
   else
     " This replicates t/T/; + count behaviour.
-    let is_t_repeat = a:fwd < 0
-    if a:f ==# 't' && (a:fwd == 1 || a:fwd == -1)
-          \ || a:f ==# 'T' && a:fwd == -2
+    let is_t_repeat = afwd < 0
+    if a:f ==# 't' && (afwd == 1 || afwd == -1)
+          \ || a:f ==# 'T' && afwd == -2
       " Search forward.
       let pat = '\_.\ze'.s:str2coll(s:fchar)
       let flags = 'cWn'
@@ -192,16 +201,16 @@ function! s:next_char(count, char, f, fwd) "{{{2
     if a:count == 1 && is_on_one && (!is_t_repeat || is_t_repeat && &cpo =~ ';')
       return [0,0]
     endif
-    if a:count > 1 && a:fwd == -1
+    if a:count > 1 && afwd == -1
       " Case 1 ';'
       let ccount = is_on_one ? a:count - 1 : a:count
-    elseif a:count > 1 && a:fwd == -2
+    elseif a:count > 1 && afwd == -2
       " Case 2 ','
       let ccount = a:count
-    elseif a:count > 1 && a:fwd
+    elseif a:count > 1 && afwd
       " Case 3 't'
       let ccount = is_on_one ? a:count - 1 : a:count
-    elseif a:count > 1 && !a:fwd
+    elseif a:count > 1 && !afwd
       " Case 4 'T'
       let ccount = is_on_one ? a:count - 1 : a:count
     else
@@ -241,7 +250,7 @@ endfunction
 
 function! s:operator_next_char(count, char, f, fwd) "{{{2
   let curpos = getpos('.')
-  let curpos[2] -= (g:fanfingtastic_all_inclusive || a:fwd) ? 0 : 1
+  let curpos[2] -= (g:fanfingtastic_all_inclusive || s:fwd[a:fwd]) ? 0 : 1
   call setpos("'[", curpos)
   call setpos("']", curpos)
   let pos = [0] + s:next_char(a:count, a:char, a:f, a:fwd) + [0]
@@ -291,21 +300,21 @@ endfunction
 " Maps: {{{1
 
 for [mode, fn_prefix] in [['n', ''], ['x', 'visual_'], ['o', 'operator_']]
-  for [cmd, arg1, arg2, arg3] in [
-        \['f', '""', '"f"', 1],
-        \['F', '""', '"F"', 0],
-        \['t', '""', '"t"', 1],
-        \['T', '""', '"T"', 0],
-        \[';', '<SID>get("fchar")', '<SID>get("ff")', -1],
-        \[',', '<SID>get("fchar")', '<SID>get("ff")', -2]
+  for [cmd, arg1, arg2] in [
+        \['f', '""', '"f"'],
+        \['F', '""', '"F"'],
+        \['t', '""', '"t"'],
+        \['T', '""', '"T"'],
+        \[';', '<SID>get("fchar")', '<SID>get("ff")'],
+        \[',', '<SID>get("fchar")', '<SID>get("ff")']
         \]
     exec printf(
           \ '%snoremap <silent><Plug>fanfingtastic_%s '
-          \ . ':<C-U>call <SID>%snext_char(v:count1, %s, %s, %d)<CR>',
-          \ mode, cmd, fn_prefix, arg1, arg2, arg3)
+          \ . ':<C-U>call <SID>%snext_char(v:count1, %s, %s, "%s")<CR>',
+          \ mode, cmd, fn_prefix, arg1, arg2, cmd)
   endfor
 endfor
-unlet mode cmd fn_prefix arg1 arg2 arg3
+unlet mode cmd fn_prefix arg1 arg2
 
 for m in ['n', 'x', 'o']
   for c in ['f', 'F', 't', 'T', ';', ',']
@@ -320,8 +329,7 @@ for m in ['n', 'x', 'o']
     endif
   endfor
 endfor
-unlet c
-unlet m
+unlet c m
 
 " Commands: {{{1
 command! -nargs=+ -bar -bang FanfingTasticAlias call <SID>define_alias(<f-args>, <bang>0)
