@@ -15,66 +15,72 @@ type == assigned
 let somevar -= 1000
 let somevar -= 1000
 .
+return
+1) abc abc abc abc abc abc
+2) abcd abcd abcd abcd abcd
+3) abcde
+4) type == assigned
+5) type == assigned
+6) type == assigned
+7) type == assigned
+8) let somevar -= 1000
+9) let somevar -= 1000
 endfunction
 
 " run these tests twice; the first time without f,ing loaded
 for loop in range(2)
+  " "doautocmd CursorHold" is needed to trigger repeat's magic.
+  " XXX Don't forget to prepend vim-repeat path to the rtp in your global
+  " runVimTestsSetup.vim.
   call s:reset()
-  normal 1G0ctcxyz
-  call LineColPos(1, 3)  " <== XXX Account for 2 tests each call XXX
+  call LineColPos(1, 3, 'normal 1G0ctcxyz')  " <== XXX Account for 2 tests each call XXX
   call LineMatch(1, 'xyzc abc abc abc abc abc')
 
   call s:reset()
-  normal 1G0dtc
-  call LineColPos(1, 1)
+  call LineColPos(1, 1, 'normal 1G0dtc')
   call LineMatch(1, 'c abc abc abc abc abc')  "xyz abc abc...
 
   call s:reset()
-  normal 1G0ytc
-  call LineColPos(1, 1)
+  call LineColPos(1, 1, 'normal 1G0ytc')
   call VisualMatch('ab')
 
   call s:reset()
-  normal 1G0g~tc
-  call LineColPos(1, 1)
+  call LineColPos(1, 1, 'normal 1G0g~tc')
   call LineMatch(1, 'ABc abc abc abc abc abc')  "xyz abc abc...
 
   call s:reset()
-  normal 1G0g~2tc
-  call LineColPos(1, 1)
+  call LineColPos(1, 1, 'normal 1G0g~2tc')
   call LineMatch(1, 'ABC ABc abc abc abc abc')  "xyz abc abc...
 
   call s:reset()
-  normal 4G0df .
-  call LineColPos(4, 1)
+  call LineColPos(4, 1, 'normal 4G0df ma', 'doautocmd CursorMoved', 'normal `a.')
   call LineMatch(4, 'assigned')
 
   call s:reset()
-  normal 5G$dF .
-  call LineColPos(5, 5)
+  call LineColPos(5, 5, 'normal 5G$dF ma', 'doautocmd CursorMoved', 'normal `a.')
   call LineMatch(5, 'typed')
 
   call s:reset()
-  normal 6G0dt .
-  call LineColPos(6, 1)
+  call LineColPos(6, 1, 'normal 6G0dt ma', 'doautocmd CursorMoved', 'normal `a.')
   call LineMatch(6, ' assigned')
 
   " dT
   call s:reset()
-  normal 7G$dT h.
-  call LineColPos(7, 6)
+  call LineColPos(7, 6, 'normal 7G$dT hma', 'doautocmd CursorMoved', 'normal `a.')
   call LineMatch(7, 'type  d')
 
   " d;.
   call s:reset()
-  normal 8G0df d;.
-  call LineColPos(8, 1)
+  call LineColPos(8, 1, 'normal 8G0df d;ma', 'doautocmd CursorMoved', 'normal `a.')
   call LineMatch(8, '1000')
 
   " d,.
+  if loop == 1
+    " TODO when "," and ";" move backwards they should be exclusive motions.
+    call vimtap#Todo(3)
+  endif
   call s:reset()
-  normal 9G$bbdf d,.
-  call LineColPos(9, 4)
+  call LineColPos(9, 4, 'normal 9G$bbdf ma', 'doautocmd CursorMoved', 'normal `ad,ma', 'doautocmd CursorMoved', 'normal `a.')
   call LineMatch(9, 'let1000')
 
   %d

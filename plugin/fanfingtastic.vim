@@ -249,6 +249,7 @@ function! RepeatSet(buf)
 endfunction
 
 function! s:operator_next_char(count, char, f, fwd) "{{{2
+  " TODO when , and ; move backwards they should be exclusive motions.
   let curpos = getpos('.')
   let curpos[2] -= (g:fanfingtastic_all_inclusive || s:fwd[a:fwd]) ? 0 : 1
   call setpos("'[", curpos)
