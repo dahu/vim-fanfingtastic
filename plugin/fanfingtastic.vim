@@ -290,32 +290,29 @@ endfunction
 
 " Maps: {{{1
 
-nnoremap  <Plug>fanfingtastic_f :<C-U>call <SID>next_char(v:count1, ''               , 'f'           ,  1)<CR>
-nnoremap  <Plug>fanfingtastic_F :<C-U>call <SID>next_char(v:count1, ''               , 'F'           ,  0)<CR>
-nnoremap  <Plug>fanfingtastic_t :<C-U>call <SID>next_char(v:count1, ''               , 't'           ,  1)<CR>
-nnoremap  <Plug>fanfingtastic_T :<C-U>call <SID>next_char(v:count1, ''               , 'T'           ,  0)<CR>
-nnoremap  <Plug>fanfingtastic_; :<C-U>call <SID>next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -1)<CR>
-nnoremap  <Plug>fanfingtastic_, :<C-U>call <SID>next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -2)<CR>
-
-vnoremap  <Plug>fanfingtastic_f :<C-U>call <SID>visual_next_char(v:count1, ''               , 'f'           ,  1)<CR>
-vnoremap  <Plug>fanfingtastic_F :<C-U>call <SID>visual_next_char(v:count1, ''               , 'F'           ,  0)<CR>
-vnoremap  <Plug>fanfingtastic_t :<C-U>call <SID>visual_next_char(v:count1, ''               , 't'           ,  1)<CR>
-vnoremap  <Plug>fanfingtastic_T :<C-U>call <SID>visual_next_char(v:count1, ''               , 'T'           ,  0)<CR>
-vnoremap  <Plug>fanfingtastic_; :<C-U>call <SID>visual_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -1)<CR>
-vnoremap  <Plug>fanfingtastic_, :<C-U>call <SID>visual_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -2)<CR>
-
-onoremap  <silent> <Plug>fanfingtastic_f :<C-U>call <SID>operator_next_char(v:count1, ''               , 'f'           ,  1)<CR>
-onoremap  <silent> <Plug>fanfingtastic_F :<C-U>call <SID>operator_next_char(v:count1, ''               , 'F'           ,  0)<CR>
-onoremap  <silent> <Plug>fanfingtastic_t :<C-U>call <SID>operator_next_char(v:count1, ''               , 't'           ,  1)<CR>
-onoremap  <silent> <Plug>fanfingtastic_T :<C-U>call <SID>operator_next_char(v:count1, ''               , 'T'           ,  0)<CR>
-onoremap  <silent> <Plug>fanfingtastic_; :<C-U>call <SID>operator_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -1)<CR>
-onoremap  <silent> <Plug>fanfingtastic_, :<C-U>call <SID>operator_next_char(v:count1, <SID>get('fchar'), <SID>get('ff'), -2)<CR>
+for [mode, fn_prefix] in [['n', ''], ['x', 'visual_'], ['o', 'operator_']]
+  for [cmd, arg1, arg2, arg3] in [
+        \['f', '""', '"f"', 1],
+        \['F', '""', '"F"', 0],
+        \['t', '""', '"t"', 1],
+        \['T', '""', '"T"', 0],
+        \[';', '<SID>get("fchar")', '<SID>get("ff")', -1],
+        \[',', '<SID>get("fchar")', '<SID>get("ff")', -2]
+        \]
+    exec printf(
+          \ '%snoremap <silent><Plug>fanfingtastic_%s '
+          \ . ':<C-U>call <SID>%snext_char(v:count1, %s, %s, %d)<CR>',
+          \ mode, cmd, fn_prefix, arg1, arg2, arg3)
+  endfor
+endfor
+unlet mode cmd fn_prefix arg1 arg2 arg3
 
 for m in ['n', 'x', 'o']
   for c in ['f', 'F', 't', 'T', ';', ',']
     if !hasmapto('<Plug>fanfingtastic_' . c, m)
       if !exists('g:runVimTests')
-        if exists('g:mapleader') && (c == g:mapleader) && (g:fanfingtastic_map_over_leader == 0)
+        if exists('g:mapleader') && (c == g:mapleader) &&
+              \ (g:fanfingtastic_map_over_leader == 0)
           continue
         endif
       endif
