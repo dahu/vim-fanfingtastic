@@ -7,8 +7,9 @@
 Help on using Fanf,ingTastic;                                    *fanfingtastic*
 
 1. Introduction				|fanfingtastic-intro|
-2. Configuration			|fanfingtastic-configuration|
-3. Authors				|fanfingtastic-authors|
+2. Custom mappings			|fanfingtastic-mappings|
+3. Configuration			|fanfingtastic-configuration|
+4. Authors				|fanfingtastic-authors|
 
 ==============================================================================
  1. INTRODUCTION                                           *fanfingtastic-intro*
@@ -40,7 +41,27 @@ enabled, the user will not be able to find plain 'b' or 'B' characters with
 the fFtT;, commands. See |fanfingtastic-aliases| for more details.
 
 ==============================================================================
- 2. CONFIGURATION                                  *fanfingtastic-configuration*
+ 2. CUSTOM MAPPINGS                                     *fanfingtastic-mappings*
+
+Fanf,ingTastic; provides the following mappings in order to allow
+customization:
+>
+  <Plug>fanfingtastic_f
+  <Plug>fanfingtastic_F
+  <Plug>fanfingtastic_t
+  <Plug>fanfingtastic_T
+  <Plug>fanfingtastic_;
+  <Plug>fanfingtastic_,
+<
+In case you have remapped, let's say, ';' to ':' and you want to use '-' for
+Fanf,ingTastic; instead, just put the following mappings in your vimrc:
+>
+  nmap - <Plug>fanfingtastic_;
+  xmap - <Plug>fanfingtastic_;
+  omap - <Plug>fanfingtastic_;
+<
+==============================================================================
+ 3. CONFIGURATION                                  *fanfingtastic-configuration*
                                                          *fanfingtastic-aliases*
 The following options alter the behaviour of Fanf,ingTastic;
 
@@ -120,7 +141,7 @@ When this option is enabled movements made with fFtT;, will be added to the
 <
 
 ==============================================================================
- 3. AUTHORS                                              *fanfingtastic-authors*
+ 4. AUTHORS                                              *fanfingtastic-authors*
 
 Fanf,ingTastic; is maintained by:
 
