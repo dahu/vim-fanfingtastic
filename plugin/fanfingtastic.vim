@@ -34,7 +34,7 @@ set cpo&vim
 "endif
 "let g:loaded_fanfingtastic = 1
 
-let s:fchar = ''
+let s:fchar = get(s:, 'fchar', '')
 let s:fwd = {
       \'f': 1,
       \'F': 0,
@@ -46,11 +46,10 @@ let s:fwd = {
 " Options: {{{1
 " Private Functions: {{{1
 function! s:get(var) "{{{2
-  let var = 's:'.a:var
-  return exists(var) ? eval(var) : ''
+  return get(s:, a:var, '')
 endfunction
 
-function! s:str2coll(str) "{{{2
+function! s:str2collection(str) "{{{2
   let pat = escape(a:str, '\]^')
   let pat = substitute(pat, '\m^\(.*\)-\(.*\)', '\1\2-', 'g')
   let pat = '[' . pat . ']'
@@ -59,7 +58,7 @@ endfunction
 
 function! s:search(fwd, f, ...) "{{{2
   " Define what will be searched.
-  let cpat = s:str2coll(s:fchar)
+  let cpat = s:str2collection(s:fchar)
   let pat = a:f ? cpat : (a:fwd ? '\_.\ze' . cpat : cpat . '\zs\_.')
   let b_flag = a:fwd ? '' : 'b'
   " This is for the tx todo.
@@ -124,17 +123,6 @@ function! s:get_visual_pos() "{{{2
 endfunction
 
 function! s:set_find_char(args, cmd, a) "{{{2
-  "call inputsave()
-  " Do not use this if 'showcmd' is not set or running tests.
-  " this_is_a_test
-  " let showcmd = a:a >= 0 && &showcmd && !exists('g:runVimTests')
-  " if showcmd
-  "   " show command.
-  "   let lead = repeat(' ', &columns - 11)
-  "   let cr = repeat("\n", &cmdheight - 1)
-  "   echon cr . lead . a:cmd
-  " endif
-
   if type(a:args) == type('')
     let s:fchar = empty(a:args) ? nr2char(getchar()) : a:args
   elseif len(a:args) == 2
@@ -142,11 +130,6 @@ function! s:set_find_char(args, cmd, a) "{{{2
   else
     let s:fchar = nr2char(getchar())
   endif
-  "call inputrestore()
-  " if showcmd
-  "   "call feedkeys((v:operator ==# 'c' ? "\<CR>" : "\<Esc>"), 'n')
-  "   call feedkeys("\<CR>", 'n')
-  " endif
 endfunction
 
 function! s:next_char(count, char, f, fwd) "{{{2
@@ -166,25 +149,24 @@ function! s:next_char(count, char, f, fwd) "{{{2
   else
     " This replicates t/T/; + count behaviour.
     let is_t_repeat = afwd < 0
-    if a:f ==# 't' && (afwd == 1 || afwd == -1)
-          \ || a:f ==# 'T' && afwd == -2
+    if a:f ==# 't' && (a:fwd ==# 't' || a:fwd ==# ';')
+          \ || a:f ==# 'T' && a:fwd ==# ','
       " Search forward.
-      let pat = '\_.\ze'.s:str2coll(s:fchar)
+      let pat = '\_.\ze'.s:str2collection(s:fchar)
       let flags = 'cWn'
     else
       " Or not.
-      let pat = s:str2coll(s:fchar).'\zs\_.'
+      let pat = s:str2collection(s:fchar).'\zs\_.'
       let flags = 'cWnb'
     endif
-
     let is_on_one = getpos('.')[1:2] == searchpos(pat, flags, line('.'))
     if a:count == 1 && is_on_one && (!is_t_repeat || is_t_repeat && &cpo =~ ';')
       return [0,0]
     endif
-    if a:count > 1 && afwd == -1
+    if a:count > 1 && a:fwd ==# ';'
       " Case 1 ';'
       let ccount = is_on_one ? a:count - 1 : a:count
-    elseif a:count > 1 && afwd == -2
+    elseif a:count > 1 && a:fwd ==# ','
       " Case 2 ','
       let ccount = a:count
     elseif a:count > 1 && afwd
@@ -197,7 +179,6 @@ function! s:next_char(count, char, f, fwd) "{{{2
       let ccount = a:count
     endif
   endif
-
   return s:next_char_pos(ccount, a:f =~? 'f', fwd)
 endfunction
 
@@ -215,11 +196,10 @@ function! s:visual_next_char(count, char, f, fwd) "{{{2
   exec 'normal! `[' . vmode . '`]'
 endfunction
 
+function! RepeatSet(buf) "{{{2
 " guns' awesome workaround for ./repeat issue
 " https://github.com/tpope/vim-repeat/issues/8
-function! RepeatSet(buf)
   call repeat#set(a:buf)
-
   augroup repeat_tick
     autocmd!
     autocmd CursorMoved <buffer>
@@ -229,21 +209,23 @@ function! RepeatSet(buf)
 endfunction
 
 function! s:operator_next_char(count, char, f, fwd) "{{{2
-  " TODO when , and ; move backwards they should be exclusive motions.
   let curpos = getpos('.')
-  let curpos[2] -= (get(g:, 'fanfingtastic_all_inclusive', 0) || s:fwd[a:fwd]) ? 0 : 1
+  if !get(g:, 'fanfingtastic_all_inclusive', 0) &&
+        \(a:fwd =~# '[FT]' || a:f =~# '[ft]' && a:fwd == ',' || a:f =~# '[FT]' && a:fwd == ';')
+    let curpos[2] -= 1
+  endif
   call setpos("'[", curpos)
   call setpos("']", curpos)
   let pos = [0] + s:next_char(a:count, a:char, a:f, a:fwd) + [0]
-  "if pos[1] == 0
-    "return ''
-  "endif
   if pos[1] != 0
     call setpos("']", pos)
   endif
+  " No need to give a char to jump to with ";" and ",".
+  let sufix = a:fwd =~ '[,;]' ? '' : s:fchar
   " Use the dot register to repeat with the c-hange operator.
-  let sufix = v:operator ==# 'c' ? "\<C-R>.\<Esc>" : ""
-  silent! call RepeatSet(v:operator . "\<Plug>fanfingtastic_" . a:f . s:fchar . sufix)
+  let sufix .= v:operator ==# 'c' ? "\<C-R>.\<Esc>" : ""
+  let expr = printf("%s\<Plug>fanfingtastic_%s%s", v:operator, a:fwd, sufix)
+  silent! call RepeatSet(expr)
   normal! `[v`]
 endfunction
 
@@ -253,11 +235,11 @@ function! s:define_alias(alias, chars, bang) "{{{2
   let uniq = a:bang ? '' : '<unique>'
   for cmd in ['f', 'F', 't', 'T']
     let fwd = cmd =~# '[ft]'
-    for [m, fun] in [['n', ''], ['v', 'visual_'], ['o', 'operator_']]
+    for [mode, fn] in [['n', ''], ['v', 'visual_'], ['o', 'operator_']]
       try
-        exe m . "nore <silent>" . uniq . " " . cmd . a:alias
-              \ . " :<C-U>call <SID>" . fun . "next_char(v:count1, '"
-              \ . chars . "', '" . cmd . "', " . fwd . ")<CR>"
+        exec printf(
+              \'%snoremap <silent>%s%s%s :<C-U>call <SID>%snext_char(v:count1,''%s'',''%s'', %s)<CR>',
+              \mode, uniq, cmd, a:alias, fn, chars, cmd, fwd)
       catch /^Vim\%((\a\+)\)\=:E227/
         call add(err, matchstr(v:exception, '\S\+$'))
       endtry
@@ -268,7 +250,8 @@ function! s:define_alias(alias, chars, bang) "{{{2
     let pl = len(err) == 1 ? '' : 's'
     let tp = len(err) == 1 ? 's' : ''
     echohl ErrorMsg
-    echom "FanfingTastic: Mapping" . pl . " already exist" . tp . " for " . join(err, ', ') . " (add ! to override)"
+    echom "FanfingTastic: Mapping" . pl . " already exist" . tp
+          \ . " for " . join(err, ', ') . " (add ! to override)"
     echohl None
   endif
 endfunction
@@ -297,20 +280,20 @@ for [mode, fn_prefix] in [['n', ''], ['x', 'visual_'], ['o', 'operator_']]
 endfor
 unlet mode cmd fn_prefix arg1 arg2
 
-for m in ['n', 'x', 'o']
-  for c in ['f', 'F', 't', 'T', ';', ',']
-    if !hasmapto('<Plug>fanfingtastic_' . c, m)
-      if !exists('g:runVimTests')
-        if exists('g:mapleader') && (c == g:mapleader) &&
-              \ get(g:, 'fanfingtastic_map_over_leader', 0)
-          continue
-        endif
-      endif
-      sil! exec m . 'map <unique><silent> ' . c . ' <Plug>fanfingtastic_' . c
+for mode in ['n', 'x', 'o']
+  for cmd in ['f', 'F', 't', 'T', ';', ',']
+    if hasmapto('<Plug>fanfingtastic_' . cmd, mode)
+      continue
     endif
+    if !exists('g:runVimTests')
+          \ && get(g:, 'mapleader', '') ==# cmd
+          \ && get(g:, 'fanfingtastic_map_over_leader', 0)
+      continue
+    endif
+    silent! exec printf('%smap <unique><silent> %s <Plug>fanfingtastic_%s', mode, cmd, cmd)
   endfor
 endfor
-unlet c m
+unlet cmd mode
 
 " Commands: {{{1
 command! -nargs=+ -bar -bang FanfingTasticAlias call <SID>define_alias(<f-args>, <bang>0)
