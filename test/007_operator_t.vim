@@ -1,5 +1,5 @@
 call vimtest#StartTap()
-call vimtap#Plan(66) " <== XXX  Keep plan number updated.  XXX
+call vimtap#Plan(78) " <== XXX  Keep plan number updated.  XXX
 "call vimtap#Diag('Test')
 
 function! s:reset()
@@ -74,13 +74,17 @@ for loop in range(2)
   call LineColPos(8, 1, 'normal 8G0df d;ma', 'doautocmd CursorMoved', 'normal `a.')
   call LineMatch(8, '1000')
 
-  " d,.
-  if loop == 1
-    " TODO when "," and ";" move backwards they should be exclusive motions.
-    call vimtap#Todo(3)
-  endif
   call s:reset()
-  call LineColPos(9, 4, 'normal 9G$bbdf ma', 'doautocmd CursorMoved', 'normal `ad,ma', 'doautocmd CursorMoved', 'normal `a.')
+  call LineColPos(1, 15, 'normal 1G05fcgU,')
+  call LineMatch(1, 'abc abc abc abC ABc abc')
+
+  call s:reset()
+  call LineColPos(1, 11, 'normal 1G05fcgU,ma', 'doautocmd CursorMoved', 'normal `a.')
+  call LineMatch(1, 'abc abc abC ABC ABc abc')
+
+  " d,.
+  call s:reset()
+  call LineColPos(9, 4, 'normal 9G$bbdf ma', 'silent! doautocmd CursorMoved', 'normal `ad,ma', 'silent! doautocmd CursorMoved', 'normal `a.')
   call LineMatch(9, 'let1000')
 
   %d

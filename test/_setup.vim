@@ -8,8 +8,8 @@ function! LineColPos(line, col, ...)
   let msg = join(a:000, '|') . '.'
   let l = line('.')
   let c = col('.')
-  call vimtap#Is(l, a:line, 'LineColPos Line'.msg)
-  call vimtap#Is(c, a:col, 'LineColPos Column'.msg)
+  call vimtap#Is(l, a:line, 'LineColPos Line, Test ' . g:test_count . ': ' . msg)
+  call vimtap#Is(c, a:col, 'LineColPos Column, Test ' . g:test_count . ': ' . msg)
 endfunction
 
 function! VisualMatch(expected)
