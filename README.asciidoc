@@ -2,6 +2,9 @@ image:https://raw.github.com/dahu/vim-fanfingtastic/master/fanfingtastic.png[]
 
 __Find a char, across lines__
 
+TIP: If you like Fanf,ingTastic; and want to share the W00t!, I'm grateful for
+https://www.gittip.com/bairuidahu/[tips] or
+http://of-vim-and-vigor.blogspot.com/[beverages].
 
 __Fanf,ingTastic;__ is a Vim plugin that enhances the builtin +F+ +f+ +,+ +T+ +t+
 and +;+ keys by allowing them to wrap over lines with the full gamut of
