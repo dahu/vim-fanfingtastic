@@ -50,9 +50,13 @@ function! s:get(var) "{{{2
 endfunction
 
 function! s:str2collection(str) "{{{2
-  let pat = escape(a:str, '\]^')
-  let pat = substitute(pat, '\m^\(.*\)-\(.*\)', '\1\2-', 'g')
-  let pat = '[' . pat . ']'
+  if a:str =~ '\m^/.+/$'
+    let pat = join(split(a:str, '/', 1)[1:-2], '/')
+  else
+    let pat = escape(a:str, '\]^')
+    let pat = substitute(pat, '\m^\(.*\)-\(.*\)', '\1\2-', 'g')
+    let pat = '[' . pat . ']'
+  endif
   return pat
 endfunction
 
@@ -231,7 +235,7 @@ endfunction
 
 function! s:define_alias(alias, chars, bang) "{{{2
   let err = []
-  let chars = substitute(a:chars, "'", '&&', 'g')
+  let chars = substitute(substitute(a:chars, "'", '&&', 'g'), '|', '<bar>', 'g')
   let uniq = a:bang ? '' : '<unique>'
   for cmd in ['f', 'F', 't', 'T']
     for [mode, fn] in [['n', ''], ['v', 'visual_'], ['o', 'operator_']]
