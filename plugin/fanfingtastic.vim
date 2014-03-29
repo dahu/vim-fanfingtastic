@@ -50,7 +50,7 @@ function! s:get(var) "{{{2
 endfunction
 
 function! s:str2collection(str) "{{{2
-  if a:str =~ '\m^/.+/$'
+  if a:str =~ '\m^/.\+/$'
     let pat = join(split(a:str, '/', 1)[1:-2], '/')
   else
     let pat = escape(a:str, '\]^')
