@@ -78,8 +78,8 @@ Examples: >
 The default vim-flatfoot commands can be used for the start/end of a CamelCase
 or snake_case word: >
 
-  :FanfingTasticAlias <C-W> /\C[[:alnum:]]\@<![[:alnum:]]\|[^[:upper:]]\@<=[[:upper:]]\|[[:upper:]][[:lower:]]\@=/
-  :FanfingTasticAlias <C-E> /\C[[:alnum:]][[:alnum:]]\@!\|[[:lower:][:digit:]][[:upper:]]\@=\|[[:upper:]]\%([[:upper:]][[:lower:]]\)\@=/
+  :FanfingTasticAlias <C-W> /\C[[:alnum:]]\@<![[:alnum:]]\\|[^[:upper:]]\@<=[[:upper:]]\\|[[:upper:]][[:lower:]]\@=/
+  :FanfingTasticAlias <C-E> /\C[[:alnum:]][[:alnum:]]\@!\\|[[:lower:][:digit:]][[:upper:]]\@=\\|[[:upper:]]\%([[:upper:]][[:lower:]]\)\@=/
 
 ------------------------------------------------------------------------------
 
