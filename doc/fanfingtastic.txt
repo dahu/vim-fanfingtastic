@@ -63,6 +63,26 @@ Fanf,ingTastic; instead, just put the following mappings in your vimrc:
 ==============================================================================
  3. CONFIGURATION                                  *fanfingtastic-configuration*
                                                          *fanfingtastic-aliases*
+
+:FanfingTasticAlias[!] {name} {target}
+				Define an alias {name} for the corresponding
+				{target}.  {name} can be a character like B or
+				<C-D>. The {target} can be a list of
+				characters or a /regex/.
+
+Examples: >
+
+  :FanfingTasticAlias x []{}()
+  :FanfingTasticAlias <C-D> /\d/
+
+The default vim-flatfoot commands can be used for the start/end of a CamelCase
+or snake_case word: >
+
+  :FanfingTasticAlias <C-W> /\C[[:alnum:]]\@<![[:alnum:]]\|[^[:upper:]]\@<=[[:upper:]]\|[[:upper:]][[:lower:]]\@=/
+  :FanfingTasticAlias <C-E> /\C[[:alnum:]][[:alnum:]]\@!\|[[:lower:][:digit:]][[:upper:]]\@=\|[[:upper:]]\%([[:upper:]][[:lower:]]\)\@=/
+
+------------------------------------------------------------------------------
+
 The following options alter the behaviour of Fanf,ingTastic;
 
 |'fanfingtastic_all_inclusive'|	Makes backward movements to be |inclusive|.
@@ -98,7 +118,8 @@ use either the comma or semicolon key as their |mapleader|. By default,
 Fanf,ingTastic; will not map over your mapleader. To allow this, add the
 following line to your $MYVIMRC:
 >
-  let g:fanfingtastic_map_over_leader = 1 <
+  let g:fanfingtastic_map_over_leader = 1
+<
 
 ------------------------------------------------------------------------------
                                                          *'fanfingtastic-fix-t'*
