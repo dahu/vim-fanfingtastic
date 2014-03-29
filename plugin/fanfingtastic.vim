@@ -234,12 +234,11 @@ function! s:define_alias(alias, chars, bang) "{{{2
   let chars = substitute(a:chars, "'", '&&', 'g')
   let uniq = a:bang ? '' : '<unique>'
   for cmd in ['f', 'F', 't', 'T']
-    let fwd = cmd =~# '[ft]'
     for [mode, fn] in [['n', ''], ['v', 'visual_'], ['o', 'operator_']]
       try
         exec printf(
-              \'%snoremap <silent>%s%s%s :<C-U>call <SID>%snext_char(v:count1,''%s'',''%s'', %s)<CR>',
-              \mode, uniq, cmd, a:alias, fn, chars, cmd, fwd)
+              \'%snoremap <silent>%s%s%s :<C-U>call <SID>%snext_char(v:count1,''%s'',''%s'', ''%s'')<CR>',
+              \mode, uniq, cmd, a:alias, fn, chars, cmd, cmd)
       catch /^Vim\%((\a\+)\)\=:E227/
         call add(err, matchstr(v:exception, '\S\+$'))
       endtry
