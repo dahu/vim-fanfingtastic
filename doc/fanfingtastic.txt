@@ -93,7 +93,7 @@ The following options alter the behaviour of Fanf,ingTastic;
 |'fanfingtastic_use_jumplist'|	Adds the movements with fFtT;, to the |jumplist|.
 
 ------------------------------------------------------------------------------
-                                                 *'fanfingtastic-all-inclusive'*
+                                                 *'fanfingtastic_all_inclusive'*
                                                *'g:fanfingtastic_all_inclusive'*
 Values: boolean
 Default: 0                                                                   ~
@@ -107,7 +107,7 @@ your $MYVIMRC:
 <
 
 ------------------------------------------------------------------------------
-                                               *'fanfingtastic-map-over-leader'*
+                                               *'fanfingtastic_map_over_leader'*
                                              *'g:fanfingtastic_map_over_leader'*
 Values: boolean
 Default: 0                                                                   ~
@@ -122,7 +122,7 @@ following line to your $MYVIMRC:
 <
 
 ------------------------------------------------------------------------------
-                                                         *'fanfingtastic-fix-t'*
+                                                         *'fanfingtastic_fix_t'*
                                                        *'g:fanfingtastic_fix_t'*
 Values: boolean
 Default: 0                                                                   ~
@@ -136,7 +136,7 @@ expected. To enable this, add the following line to your $MYVIMRC:
 <
 
 ------------------------------------------------------------------------------
-                                                    *'fanfingtastic-ignorecase'*
+                                                    *'fanfingtastic_ignorecase'*
                                                   *'g:fanfingtastic_ignorecase'*
 Values: boolean
 Default: 0                                                                   ~
@@ -150,7 +150,7 @@ $MYVIMRC:
 <
 
 ------------------------------------------------------------------------------
-                                                  *'fanfingtastic-use-jumplist'*
+                                                  *'fanfingtastic_use_jumplist'*
                                                 *'g:fanfingtastic_use_jumplist'*
 Values: boolean
 Default: 0                                                                   ~
