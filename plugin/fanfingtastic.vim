@@ -44,6 +44,11 @@ let s:fwd = {
       \',': -2
       \}
 " Options: {{{1
+
+if !exists('g:fing_enabled')
+  let g:fing_enabled = 1
+endif
+
 " Private Functions: {{{1
 function! s:get(var) "{{{2
   return get(s:, a:var, '')
@@ -283,20 +288,37 @@ for [mode, fn_prefix] in [['n', ''], ['x', 'visual_'], ['o', 'operator_']]
 endfor
 unlet mode cmd fn_prefix arg1 arg2
 
-for mode in ['n', 'x', 'o']
-  for cmd in ['f', 'F', 't', 'T', ';', ',']
-    if hasmapto('<Plug>fanfingtastic_' . cmd, mode)
-      continue
-    endif
-    if !exists('g:runVimTests')
-          \ && get(g:, 'mapleader', '') ==# cmd
-          \ && get(g:, 'fanfingtastic_map_over_leader', 0)
-      continue
-    endif
-    silent! exec printf('%smap <unique><silent> %s <Plug>fanfingtastic_%s', mode, cmd, cmd)
+function! FanfingTasticEnable(...)
+  let enabled = a:0 ? a:1 : 1
+
+  for mode in ['n', 'x', 'o']
+    for cmd in ['f', 'F', 't', 'T', ';', ',']
+      if enabled
+        if hasmapto('<Plug>fanfingtastic_' . cmd, mode)
+          continue
+        endif
+        if !exists('g:runVimTests')
+              \ && get(g:, 'fanfingtastic_map_over_leader', 0)
+              \ && get(g:, 'mapleader', '') ==# cmd
+          continue
+        endif
+        silent! exec printf('%smap <unique><silent> %s <Plug>fanfingtastic_%s', mode, cmd, cmd)
+      else
+        silent! exec printf('%sunmap %s', mode, cmd)
+      endif
+    endfor
   endfor
-endfor
-unlet cmd mode
+  unlet cmd mode
+endfunction
+
+function! FanfingTasticDisable()
+  let enabled = a:0 ? a:1 : 0
+  call FanfingTasticEnable(enabled)
+endfunction
+
+if g:fing_enabled
+  call FanfingTasticEnable()
+endif
 
 " Commands: {{{1
 command! -nargs=+ -bar -bang FanfingTasticAlias call <SID>define_alias(<f-args>, <bang>0)
