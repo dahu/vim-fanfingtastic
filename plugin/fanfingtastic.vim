@@ -289,11 +289,11 @@ endfor
 unlet mode cmd fn_prefix arg1 arg2
 
 function! FanfingTasticEnable(...)
-  let enabled = a:0 ? a:1 : 1
+  let g:fing_enabled = a:0 ? a:1 : 1
 
   for mode in ['n', 'x', 'o']
     for cmd in ['f', 'F', 't', 'T', ';', ',']
-      if enabled
+      if g:fing_enabled
         if hasmapto('<Plug>fanfingtastic_' . cmd, mode)
           continue
         endif
@@ -312,8 +312,8 @@ function! FanfingTasticEnable(...)
 endfunction
 
 function! FanfingTasticDisable()
-  let enabled = a:0 ? a:1 : 0
-  call FanfingTasticEnable(enabled)
+  let g:fing_enabled = a:0 ? a:1 : 0
+  call FanfingTasticEnable(g:fing_enabled)
 endfunction
 
 if g:fing_enabled
