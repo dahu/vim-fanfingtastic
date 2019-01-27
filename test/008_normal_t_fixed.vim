@@ -1,5 +1,5 @@
 call vimtest#StartTap()
-call vimtap#Plan(87) " <== XXX  Keep plan number updated.  XXX
+call vimtap#Plan(86) " <== XXX  Keep plan number updated.  XXX
 "call vimtap#Diag('Test')
 append
 abc abc abc abc abc abc

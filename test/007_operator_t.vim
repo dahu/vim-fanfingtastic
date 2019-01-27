@@ -2,6 +2,9 @@ call vimtest#StartTap()
 call vimtap#Plan(78) " <== XXX  Keep plan number updated.  XXX
 "call vimtap#Diag('Test')
 
+let &runtimepath = '$HOME/.vim/bundle/vendor/vim-repeat' . &rtp
+runtime! autoload/repeat.vim
+
 function! s:reset()
   %d
   append
