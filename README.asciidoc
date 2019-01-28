@@ -3,7 +3,6 @@ image:https://raw.github.com/dahu/vim-fanfingtastic/master/fanfingtastic.png[]
 __Find a char, across lines__
 
 TIP: If you like Fanf,ingTastic; and want to share the W00t!, I'm grateful for
-https://www.gittip.com/bairuidahu/[tips] or
 http://of-vim-and-vigor.blogspot.com/[beverages].
 
 __Fanf,ingTastic;__ is a Vim plugin that enhances the builtin +F+ +f+ +,+ +T+ +t+
@@ -31,7 +30,7 @@ to the cursor's current position. Of course, with both of these aliases
 enabled, the user will not be able to find plain ``b'' or ``B'' characters with the
 fFtT;, commands.
 
-NOTE: Fan,fingTastic; now depends on Tim Pope's [repeat] plugin for
+NOTE: Fan,fingTastic; depends on Tim Pope's [repeat] plugin for
 accurate dot operator support in Vim. At this stage, the f,ing
 commands cannot be composed with the dot operator within a `:norm`
 command.

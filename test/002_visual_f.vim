@@ -1,5 +1,5 @@
 call vimtest#StartTap()
-call vimtap#Plan(48) " <== XXX  Keep plan number updated.  XXX
+call vimtap#Plan(49) " <== XXX  Keep plan number updated.  XXX
 "call vimtap#Diag('Test')
 append
 abc abc abc abc abc abc
@@ -27,6 +27,9 @@ for loop in range(2)
   call LineColPos(1, 3)
   call VisualMatch('c abc abc abc abc')
 
+  " NOTE: This test fails with &selection='exclusive' because of
+  " Vim's internal handling of EOL in that mode unless &virtualedit is also set.
+  " Read :help 'selection
   normal 4G$hviwoF ;y
   call LineColPos(4, 19)
   call VisualMatch(' five six')
@@ -65,5 +68,7 @@ some text
 some text
 .
 exec "normal gg0\<C-V>2jf sfoo\<ESC>"
-call vimtap#Is(getline(1,'$'), ['footext', 'footext', 'footext'], 'Preserve visual mode.')
+let expected = getline(1, '$')
+call vimtap#Is(expected, ['footext', 'footext', 'footext'], expected, 'Preserve visual mode.')
+
 call vimtest#Quit()

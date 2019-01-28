@@ -2,6 +2,9 @@ let &rtp = expand('<sfile>:p:h:h') . ',' . &rtp . ',' . expand('<sfile>:p:h:h') 
 
 call pathogen#infect('bundle/test/{}')
 
+" Test this plugin with both &selection==inclusive (default) and &selection==exclusive
+" set selection=exclusive
+
 let g:test_count = 0
 function! LineColPos(line, col, ...)
   for cmd in a:000

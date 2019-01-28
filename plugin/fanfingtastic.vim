@@ -1,10 +1,8 @@
 " Vim global plugin to enhace f/F/t/T/;/,
 " Maintainer:	Barry Arthur <barry.arthur@gmail.com>
 "		Israel Chauca F. <israelchauca@gmail.com>
-" Version:	0.1
 " Description:	Fanf,ingTastic; is a Vim plugin that enhances the builtin
 "		f/F/t/T/;/, keys.
-" Last Change:	2012-08-31
 " License:	Vim License (see :help license)
 " Location:	plugin/fanfingtastic.vim
 " Website:	https://github.com/dahu/fanfingtastic
@@ -14,7 +12,7 @@
 " :helptags ~/.vim/doc
 " :help fanfingtastic
 
-let g:fanfingtastic_version = '0.2'  " added . support using tpope's repeat
+let g:fanfingtastic_version = '0.3'  " support &selection=exclusive mode
 
 " Vimscript Setup: {{{1
 " Allow use of line continuation.
@@ -86,6 +84,9 @@ function! s:next_char_pos(count, f, fwd) "{{{2
     " found one
     let cnt += 1
   endwhile
+  if &selection == 'exclusive' && a:fwd
+    let new_pos[1] += 1
+  endif
   return new_pos
 endfunction
 
@@ -93,22 +94,19 @@ function! s:get_visual_pos() "{{{2
   let pos1 = getpos("'<")
   let pos2 = getpos("'>")
   let corner = 0
+
   if pos1[2] > 1 && pos2[2] > 1
-    " Case 3
+    " Case 3 -- selection doesn't touch left margin
     let move = 'h'
     let back = 'l'
   elseif pos1[2] < len(getline(pos1[1])) && pos2[2] < len(getline(pos2[1]))
-    " Case 4
+    " Case 4 -- selection doesn't touch right margin
     let move = 'l'
     let back = 'h'
   elseif pos1[1] > 1 && pos2[1] > 1
-    " Case 1
+    " Case 1 -- selection doesn't touch top margin
     let move = 'k'
     let back = 'j'
-  elseif pos1[1] < line('$') && pos2[1] > line('$')
-    " Case 2
-    let move = 'j'
-    let back = 'k'
   else
     " Case 5
     let corner = 1
@@ -122,12 +120,6 @@ function! s:get_visual_pos() "{{{2
   let pos4 = getpos("'>")
   let back = (corner && pos1 == pos3 && pos2 == pos4) ? '' : back
   exec "normal! gv" . back . "\<Esc>"
-  if !corner
-    "if pos1 != pos3 && pos2 != pos4
-      "return pos1 == pos4 ? pos2 : pos1
-    "endif
-    return pos1 == pos3 ? pos2 : pos1
-  endif
   return pos1 == pos3 ? pos2 : pos1
 endfunction
 
@@ -198,11 +190,17 @@ function! s:visual_next_char(count, char, f, fwd) "{{{2
   call setpos('.', pos1)
   let pos3 = [0] + s:next_char(a:count, a:char, a:f, a:fwd) + [0]
   if pos3[1] == 0
+    exec 'normal! gv'
     return ''
   endif
   call setpos("'[", pos2)
   call setpos("']", pos3)
-  exec 'normal! `[' . vmode . '`]'
+  " Work around &selection==exclusive right-margin selection grief. See :help 'selection for details.
+  if pos2[1] > pos3[1] || (pos2[1] == pos3[1] && pos2[2] > pos3[2])
+    exec 'normal! `]' . vmode . '`[o'
+  else
+    exec 'normal! `[' . vmode . '`]'
+  endif
 endfunction
 
 function! RepeatSet(buf) "{{{2
@@ -219,9 +217,10 @@ endfunction
 
 function! s:operator_next_char(count, char, f, fwd) "{{{2
   let curpos = getpos('.')
-  if !get(g:, 'fanfingtastic_all_inclusive', 0) &&
-        \(a:fwd =~# '[FT]' || a:f =~# '[ft]' && a:fwd == ',' || a:f =~# '[FT]' && a:fwd == ';')
-    let curpos[2] -= 1
+  if !get(g:, 'fanfingtastic_all_inclusive', 0)
+        \ && (a:fwd =~# '[FT]' || a:f =~# '[ft]' && a:fwd == ',' || a:f =~# '[FT]' && a:fwd == ';')
+        \ && &selection != 'exclusive'
+      let curpos[2] -= 1
   endif
   call setpos("'[", curpos)
   call setpos("']", curpos)
