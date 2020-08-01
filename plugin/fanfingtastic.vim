@@ -187,7 +187,7 @@ function! s:visual_next_char(count, char, f, fwd) "{{{2
   let pos1 = s:get_visual_pos()
   let pos2 = getpos("'<") == pos1 ? getpos("'>") : getpos("'<")
   let vmode = visualmode(1)
-  call setpos('.', pos1)
+  " call setpos('.', pos1)
   let pos3 = [0] + s:next_char(a:count, a:char, a:f, a:fwd) + [0]
   if pos3[1] == 0
     exec 'normal! gv'
